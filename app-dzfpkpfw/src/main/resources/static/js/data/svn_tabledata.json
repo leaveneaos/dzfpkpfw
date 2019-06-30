@@ -1,0 +1,17 @@
+[
+	{
+		"id":"1",
+		"limitName":"权限1",
+		"linkSvn":[{"name":"架构组","id":"1"},{"name":"数据组","id":"2"},{"name":"算法组","id":"3"},{"name":"平台组","id":"4"}],
+		"noLinkSvn":[{"name":"产品组1","id":"1"},{"name":"产品组2","id":"2"}],
+		"path":"svn://47.92.90.217/gdgs_dsj/05架构组",
+		"desc":"架构组的文件管理"	
+	}, {
+		"id":"2",
+		"limitName":"权限2",
+		"linkSvn":[{"name":"平台组","id":"1"}],
+		"noLinkSvn":[],
+		"path":"svn://47.92.90.217/gdgs_dsj/06平台组",
+		"desc":"平台组的文件管理"
+	}
+]

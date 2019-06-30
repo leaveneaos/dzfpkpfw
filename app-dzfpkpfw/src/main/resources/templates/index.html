@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>发票开发信息管理系统</title>
+		<link rel="stylesheet" type="text/css" href="./assets/bootstrap/dist/css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="./assets/font-awesome/css/font-awesome.min.css"/>
+		<link rel="stylesheet" type="text/css" href="./css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="./css/index.css"/>
+		<link rel="stylesheet" type="text/css" href="./assets/element-ui/element.min.css"/>
+		<script src="./assets/jquery-1.12.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./assets/bootstrap/dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./assets/vue/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./assets/element-ui/element.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./js/index.js" type="text/javascript" charset="utf-8"></script>
+	    <script src="./js/methods.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="container"  >
+			<header class="c_header" id="app2">
+				<div class="col-lg-12">
+					<h3>发票开发信息管理系统</h3>
+					<div class="dropdown c_user">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    <span class="c_userName"></span>&ensp;
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					    <li @click="changePassword = true"><a>修改密码</a></li>
+					    <li role="separator" class="divider"></li>
+					    <li><a href="logout" id="exitlogoug">退出</a></li>
+					  </ul>
+					</div>
+				</div>		
+				
+				<el-dialog title="修改密码" :visible.sync="changePassword" style="line-height: 1;">
+					<el-row >
+						<el-form :model="ruleForm" ref="ruleForm" label-width="100px" :rules="pwdRules">
+							<el-col :span="16" :offset="4">
+								<el-form-item label="当前密码：" prop="passWord">
+									<el-input type="password" v-model="ruleForm.passWord" auto-complete="off"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="16" :offset="4">
+								<el-form-item label="新密码：" prop="new_psw">
+									<el-input  type="password" v-model="ruleForm.new_psw" auto-complete="off"></el-input>
+								</el-form-item>
+							</el-col>
+							<el-col :span="16" :offset="4">
+								<el-form-item label="确认新密码：" prop="newPassWord">
+									<el-input type="password" v-model="ruleForm.newPassWord" auto-complete="off"></el-input>
+								</el-form-item>
+							</el-col>
+						</el-form>
+					</el-row>
+				    <div slot="footer"  class="dialog-footer">
+					      <el-button @click="resetForm('ruleForm')">重 置</el-button>
+					      <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+					</div>
+				</el-dialog>				
+				
+			</header>
+			<section class="c_section">
+				<div class=" c_section_left">
+					<ul class="c_ul">
+						<!--<li class="li1"> <i class="fa fa-user fa-fw"></i> 用户信息</li>-->
+                        <!--<li class="li2"> <i class="fa fa-cog fa-fw"></i> 用户管理</li>-->
+                        <!--<li class="li3"> <i class="fa fa-book fa-fw"></i> SVN管理 </li>-->
+                        <!--<li class="li4"> <i class="fa fa-sitemap fa-fw"></i> 组别</li>-->
+                        <!--<li class="li5"> <i class="fa fa-wrench fa-fw"></i> 平台菜单权限</li>-->
+						<!--<li class="li6"> <i class="fa fa-user fa-fw"></i> 角色管理</li>-->
+						<!--<li class="li7"> <i class="fa fa-menu fa-fw"></i> 菜单管理</li>-->
+					</ul>
+				</div>
+				<div class=" c_section_right" id="app">
+					<div class="d_rightBox">
+					</div>
+				</div>
+			</section>			
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		var app = new Vue({
+	        el: '#app2',
+	        data(){	
+	        	var validatePass3 = (rule, value, callback) => {
+			        if (value === '') {
+			          callback(new Error('请输入当前密码'));
+			        } else {
+			          if (this.ruleForm.passWord !== '') {
+			            //this.$refs.ruleForm.validateField('passWord');
+			          }
+			          callback();
+			        }
+			    };
+			    var validatePass1 = (rule, value, callback) => {
+			        if (value === '') {
+			          callback(new Error('请输入新密码'));
+			        } else {
+			          if (this.ruleForm.new_psw !== '') {
+			            //this.$refs.ruleForm.validateField('new_psw');
+			          }
+			          callback();
+			        }
+			    };
+			    var validatePass2 = (rule, value, callback) => {
+			        if (value === '') {
+			          callback(new Error('请再次输入新密码'));
+			        } else if (value !== this.ruleForm.newPassWord) {
+			          callback(new Error('两次输入密码不一致!'));
+			        } else {
+			          callback();
+			        }
+			    };
+			    return {
+		        	changePassword:false,
+		        	ruleForm:{
+		        		passWord:'',
+		        		new_psw:'',
+		        		newPassWord:''
+		        	},
+		        	pwdRules: {
+			          passWord: [
+			            { validator: validatePass3, trigger: 'blur' }
+			          ],
+			          new_psw: [
+			            { validator: validatePass1, trigger: 'blur' }
+			          ],
+			          newPassWord: [
+			            { validator: validatePass2, trigger: 'blur' }
+			          ]
+			        },
+		      };
+		        
+	        },			
+	        mounted(){
+	        },
+	        methods: {
+				submitForm(){
+					const that=this;
+					if(this.ruleForm.passWord==''||this.ruleForm.new_psw==''||this.ruleForm.newPassWord==''){
+						that.$message({
+							type: 'error',
+							message: '请填写完整信息!'
+						});
+					}else if(this.ruleForm.new_psw!=this.ruleForm.newPassWord){
+						that.$message({
+							type: 'error',
+							message: '新密码和确认密码不一致!'
+						});
+					}else{
+						$.ajax({
+							type:"get",
+							url:"/rest/user/updatepwd?newpwd="+this.ruleForm.new_psw+"&oldpwd="+this.ruleForm.passWord,
+							async:true,
+							dataType:"json",
+							success:function(res){
+								if(res.success){
+									that.$message({
+										type: 'info',
+										message: '密码修改成功!'
+									});
+									that.logout();
+								}else{
+									that.$message({
+										type: 'info',
+										message: '密码修改失败!'
+									});
+								}
+							},
+
+						});
+					}
+				},
+				resetForm(formName) {
+			        this.$refs[formName].resetFields();
+			   },
+				logout() {
+                    $.session.clear();
+					document.getElementById("exitlogoug").click();
+				}
+	        }
+	
+	    });
+	</script>
+</html>

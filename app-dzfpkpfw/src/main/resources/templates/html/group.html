@@ -1,0 +1,535 @@
+<h2 class="c_right_title">组别</h2>
+<div class="p_box">
+	<div>
+		<el-button type="primary" style="margin-bottom: 10px;" @click="dialogFormVisible = true">添加分组</el-button>
+		<el-table ref="multipleTable" :data="tableData1" border tooltip-effect="dark" >
+			<!--<el-table-column align="center" type="selection" width="55"></el-table-column>-->
+			<!--<el-table-column align="center" prop="index" label="ID"  width="80" ></el-table-column>-->
+			<el-table-column align="center" type="index" label="序号" width="80"> </el-table-column>
+			<el-table-column align="center" prop="groupName" label="组别"  width="100" ></el-table-column>
+			<el-table-column align="center" prop="groupPerson" label="组成员">
+				<template scope="scope">
+					  <span v-for="(item,index) in scope.row.groupPerson">{{item.userName}}&ensp;</div>
+				    </span>
+				</template>
+			</el-table-column>
+			<el-table-column align="center" prop="desc" label="组别描述" width="150" ></el-table-column>
+			<el-table-column align="center" label="操作" width="200" >
+				<template scope="scope">
+					<el-button type="text" @click.native.prevent="editRow(scope.row)">编辑</el-button>
+					<el-button class="redfont" type="text" @click.native.prevent="deleteRow(scope.row,scope.$index, tableData1)">删除</el-button>
+					<el-button type="text"  @click.native.prevent="linkRow(scope.row,scope.$index, tableData1)" >关联成员</el-button>					
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="paginationTool">
+			<el-pagination
+		      @size-change="handleSizeChange"
+		      @current-change="handleCurrentChange"
+		      :current-page="currentPage"
+		      :page-sizes="pageSizes"
+		      :page-size="pageSize"
+		      layout="total, sizes, prev, pager, next, jumper"
+		      :total="totalNum">
+		   </el-pagination>			
+		</div>
+    </div>
+    
+    <el-dialog title="添加分组" :visible.sync="dialogFormVisible">
+	  <el-form :model="addGroupForm" :rules="ruleGroup" ref="editGroupForm">
+	  	<el-row>
+	  		<el-col :span="24">
+	  			<el-form-item label="组名：" :label-width="formLabelWidth" prop="groupName">
+			      <el-input v-model="addGroupForm.groupName" auto-complete="off"></el-input>
+			    </el-form-item>
+	  		</el-col>
+	  		<el-col :span="24">
+	  			<el-form-item label="组别描述：" :label-width="formLabelWidth" prop="desc">
+			      <el-input v-model="addGroupForm.desc" auto-complete="off"></el-input>
+			    </el-form-item>
+	  		</el-col>
+	  	</el-row>
+	  </el-form>
+	  <div slot="footer" class="dialog-footer">
+	    <el-button @click="dialogFormVisible = false">取 消</el-button>
+	    <el-button type="primary" @click="addGroupFormSave">确 定</el-button>
+	  </div>
+   </el-dialog>
+
+    <el-dialog title="编辑" :visible.sync="editGroup">
+	  <el-form :model="editGroupForm" :rules="ruleGroup" ref="editGroupForm">
+	  	<el-row>
+	  		<el-col :span="24">
+	  			<el-form-item label="组名：" :label-width="formLabelWidth" prop="groupName">
+			      <el-input v-model="editGroupForm.groupName" auto-complete="off"></el-input>
+			    </el-form-item>
+	  		</el-col>
+	  		<el-col :span="24">
+	  			<el-form-item label="组别描述：" :label-width="formLabelWidth">
+			      <el-input v-model="editGroupForm.desc" auto-complete="off"></el-input>
+			    </el-form-item>
+	  		</el-col>
+	  	</el-row>
+	  </el-form>
+	  <div slot="footer" class="dialog-footer">
+	    <el-button @click="editGroup = false">取 消</el-button>
+	    <el-button type="primary" @click="editRowSave(editGroupForm)">确 定</el-button>
+	  </div>
+   </el-dialog>
+
+    <el-dialog title="所有成员" :visible.sync="dialogGroup" size="large" >
+	  <el-form :model="groupForm" :inline="true">
+  			<el-form-item label="条件：" :label-width="formLabelWidth">
+		      <el-input v-model="groupForm.searchName" icon="search" placeholder="请输入姓名或用户"></el-input>
+		   </el-form-item>
+  			<el-form-item>
+  			  <el-button type="primary" icon="search" @click="search">查询</el-button>
+  			</el-form-item>
+  			<el-form-item>
+  			  <!--<el-button type="primary" >确认添加</el-button>-->
+  			</el-form-item>
+	  </el-form>
+	  <el-table :data="allPersonlist" border >
+	    <el-table-column align="center" property="userName" label="姓名" width="150"></el-table-column>
+	    <el-table-column align="center" property="accountName" label="账户" width="200"></el-table-column>
+	    <el-table-column align="center" property="groupName" label="组别"></el-table-column>
+	    <el-table-column height="22" align="center"  label="操作" >
+       		<template scope="scope">
+				<el-button class="scopebtn" type="primary"  @click.native.prevent="saveRow(scope.row,scope.$index, allPersonlist)" >添加</el-button>
+			</template>
+        </el-table-column>
+	  </el-table>
+	  
+	  <div slot="footer" class="dialog-footer">
+	    <el-button @click="dialogGroup = false">取 消</el-button>
+	    <el-button type="primary" @click="dialogGroup = false">确 定</el-button>
+	  </div>
+    </el-dialog>
+      
+    <el-dialog title="关联成员" :visible.sync="linkGroup" :close-on-click-modal="false" :close-on-press-escape="false">
+	  <el-form :model="linkPerson">
+    	<el-row>
+    		<el-col :span="24">
+    			<el-form-item label="组名：" :label-width="formLabelWidth">
+			      <el-input class="noborder" v-model="linkPerson.groupName" auto-complete="off"></el-input>
+			    </el-form-item>
+    		</el-col>
+    		<el-col :span="11">
+    			<el-form-item  label="所有成员：" :label-width="formLabelWidth">
+					<div class="groupboxdel3">				      
+						<el-tag
+						  v-for="tag2 in linkPerson.groupPerson"
+						  :key="tag2.userName"
+						  :closable="true"
+						  :close-transition="false"
+						  @close="handleCloseDelPerson1(tag2)">
+						  {{tag2.userName}}
+						</el-tag>
+					</div>
+					<!--<el-button style="margin-top: 10px ;"  type="primary">移除成员</el-button>-->
+			    </el-form-item>
+    		</el-col> 	
+    		<el-col :span="11">
+    			<el-form-item label="添加成员："  :label-width="formLabelWidth">
+					<div class="groupboxdel3">				      
+						<el-tag
+						  v-for="tag3 in linkPerson.noGroupPerson"
+						  :key="tag3.userName"
+						  :closable="true"
+						  :close-transition="false"
+						  @close="handleCloseDelPerson2(tag3)">
+						  {{tag3.userName}}
+						</el-tag>
+					</div>
+					<el-button style="margin-top: 10px ;" type="primary" @click="addOn">添加成员</el-button>
+			    </el-form-item>
+    		</el-col>
+    		<el-col :span="1">
+	    		<el-form-item>
+	    			<img style="margin-left:5px;" @click="allUser" src="../images/img/addp.png"/>
+	    		</el-form-item>
+    		</el-col>
+    	</el-row>
+	  </el-form>
+	  <div slot="footer"  class="dialog-footer">
+	    <el-button @click="linkGroup = false">取 消</el-button>
+	   <!-- <el-button type="primary" @click="linkGroup = false ">确 定</el-button>-->
+		  <el-button type="primary" @click="linkAddGroupUsers">确 定</el-button>
+	  </div>
+   </el-dialog> 
+
+</div>
+
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {	
+            tableData1: [],
+			groupId:'',
+			pageNo:1,
+			pageSize:10,
+			totalNum:0,
+            dialogFormVisible: false,
+            dialogGroup:false,
+            linkGroup:false,
+            allPersonlist:[],
+	        form: {
+	          name: '',
+	          region: '',
+	          date1: '',
+	          date2: '',
+	          textarea:'',
+	          delivery: false,
+	          type: [],
+	          resource: '',
+	          desc: ''
+	        },
+	        departmentOptions: [{
+				value: '1',
+				label: '广州研发交付中心',
+				key: '001'
+			}, {
+				value: '2',
+				label: '武汉研发交付中心',
+				key: '002'
+			}, {
+				value: '3',
+				label: '济南研发交付中心',
+				key: '003'
+			}, {
+				value: '4',
+				label: '北京研发交付中心',
+				key: '004'
+			}],
+			sexOptions: [{
+				value: '1',
+				label: '男',
+				key: '001'
+			}, {
+				value: '2',
+				label: '女',
+				key: '002'
+			}],
+			groupOptions: [{
+				value: '1',
+				label: '架构组',
+				key: '001'
+			}, {
+				value: '2',
+				label: '数据组',
+				key: '002'
+			}, {
+				value: '3',
+				label: '平台组',
+				key: '003'
+			}, {
+				value: '4',
+				label: '算法组',
+				key: '004'
+			}],
+	        addGroupForm:{ //添加分组
+	        	groupName:'',
+	            desc:'',
+	            groupPerson:[],
+	            noGroupPerson:[]
+	        },
+			ruleGroup:{
+            	groupName: [{
+					required: true,
+					message: '请输入组名',
+					trigger: 'blur'
+				}]
+            },
+	        linkPerson:{
+				groupId:'',
+	        	name:'',
+	        	desc:'',
+	            groupPerson:[],
+	            noGroupPerson:[]
+	        },
+	        editGroup:false,
+	        groupForm:{
+	          searchName:''
+	        },
+	        editGroupForm:{ //编辑组别
+			  groupId:'',
+	          groupName:'',
+			  desc:'',
+	          groupPerson:[],
+	          noGroupPerson:[]
+	        },
+	        formLabelWidth: '90px',
+	        currentPage:1,
+	        pageSizes: [10, 30, 50, 100],
+			pageSize: 10,
+			pageNum: 1,
+        },
+
+        mounted(){
+			this.svnTableData();	
+			this.allPersonTableData();
+        },
+        methods: {
+        	search(){
+				const that = this;
+				$.get("/group/puserlist",that.groupForm,function(result){
+					if(result.success){
+						console.info(result)
+						that.allPersonlist = result.data.list;
+						that.totalNum = result.data.total;
+					}
+				});
+        	},
+			svnTableData(){
+				const that=this;
+				$.ajax({
+					type:"get",
+					url:"/group/pgulist?pageNo="+that.pageNo+"&&pageNo="+that.pageSize,
+					async:true,
+					dataType:"json",
+					success:function(res){
+						$.each(res.data.list, function(idx,item) {
+							window.app.tableData1 = res.data.list;
+						})	
+					}
+			   });
+			},
+			allPersonTableData(){
+				$.ajax({
+					type:"get",
+					url:"/group/puserlist",
+					dataType:"json",
+					success:function(res){
+						window.app.allPersonlist = res.data.list;
+					},
+					error:function(){
+						alert("user_tabledata.json加载失败")
+					}
+			   });
+			},
+			handleCloseDel(tag1) {
+		        this.addGroupForm.groupPerson.splice(this.addGroupForm.groupPerson.indexOf(tag1),1);
+		        this.$message({
+		          showClose: true,
+		          message: '恭喜你，移除成功',
+		          type: 'success'
+		        });
+		    },
+		    handleCloseDelPerson1(tag2){
+		    	this.linkPerson.groupPerson.splice(this.linkPerson.groupPerson.indexOf(tag2),1);
+		        this.$message({
+		          showClose: true,
+		          message: '恭喜你，移除成功',
+		          type: 'success'
+		        });
+		    },
+		    handleCloseDelPerson2(tag3){
+		    	this.linkPerson.noGroupPerson.splice(this.linkPerson.noGroupPerson.indexOf(tag3),1);
+		        this.$message({
+		          showClose: true,
+		          message: '恭喜你，移除成功',
+		          type: 'success'
+		        });
+		    },
+		    saveRow(row,index,rows){
+		    	this.$confirm('即将添加人员, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		          window.app.linkPerson.noGroupPerson.push(row);
+		          rows.splice(index, 1);
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消添加'
+		          });
+		        });
+			},		
+			//添加保存
+			addGroupFormSave(){
+				const that = this;
+				var _addGroupForm= window.app.addGroupForm;
+				if(this.addGroupForm.groupName === '' || this.addGroupForm.desc === '' ){
+					this.$message({
+		            type: 'info',
+		            message: '请输入完整信息!'
+		          });
+				}else{
+					$.get("/group/add",_addGroupForm,function(result){
+						if(result.success){
+							console.info(result)
+							_addGroupForm.groupId=result.data;
+							window.app.tableData1.unshift(_addGroupForm);
+							that.svnTableData();
+							that.dialogFormVisible = false;
+							that.resetaddGroupForm();
+						}else{
+
+							that.$message({
+								type: 'error',
+								message: '添加失败!'
+							});
+						}
+					});
+				}
+				
+			},			
+			editRow(row){
+				console.log("editRow",row);
+				this.editGroup = true;
+				this.editGroupForm.groupId = row.groupId;
+				this.editGroupForm.groupName = row.groupName;
+				this.editGroupForm.desc = row.desc;
+			},
+			editRowSave(){
+				const  that=this;
+				$.ajax({
+					type:"get",
+					url:"/group/update?id="+this.editGroupForm.groupId+"&groupName="+this.editGroupForm.groupName+"&desc="+this.editGroupForm.desc,
+					async:true,
+					dataType:"json",
+					success:function(res){
+						if(res.success){
+							that.$message({
+								type: 'success',
+								message: '编辑成功!'
+							});
+							that.editGroup = false;
+							that.svnTableData();
+						}else{
+							that.$message({
+								type: 'error',
+								message: '编辑失败!'
+							});
+						}
+					},
+
+				});
+			},
+			deleteRow(row,index, rows) {
+				const that=this;
+				console.info("index = "+index+"row = "+row+" row.groupId ="+row.groupId);
+		        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+					$.ajax({
+					type:"get",
+					url:"/group/del/"+row.groupId,
+					async:true,
+					dataType:"json",
+					success:function(res){
+						if(res.success){
+							that.$message({
+								type: 'success',
+								message: '删除成功!'
+							});
+							rows.splice(index, 1);
+						}else{
+							that.$message({
+								type: 'error',
+								message: '删除失败!'
+							});
+						}
+					},
+
+				});
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消删除'
+		          });          
+		        });
+		    },
+		    linkRow(row,index,rows){
+		    	this.linkGroup = true;
+		    	window.app.linkPerson = row;
+				window.app.groupId=row.groupId;
+		    },
+		    addOn(){
+		    	var arr1 = this.linkPerson.groupPerson;		//存在数组1
+		    	var arr2 = this.linkPerson.noGroupPerson;	//添加数组2			    	
+		    	var arrayConcat = arr2.concat(arr1);    //连接数组1+2
+				this.linkPerson.groupPerson = arrayConcat;  
+		    	this.linkPerson.noGroupPerson = [];		    	
+			},
+			linkAddGroupUsers(){
+				const that = this;
+				var groupIdTem=window.app.groupId;
+				var users="";
+				for(var i=0;i<this.linkPerson.groupPerson.length;i++){
+					if(i==0){
+						users=this.linkPerson.groupPerson[i].userId;
+					}else{
+						users+=","+this.linkPerson.groupPerson[i].userId;
+					}
+				}
+				console.info("groupIdTem = "+groupIdTem+", users = "+users);
+				$.ajax({
+					type:"get",
+					url:"/group/addUserTogroup?groupId="+groupIdTem+"&userIds="+users,
+					async:true,
+					dataType:"json",
+					success:function(res){
+						if(res.success){
+							that.$message({
+								type: 'info',
+								message: '关联成功!'
+							});
+							that.allPersonTableData();
+							that.linkGroup = false;
+						}else{
+							that.$message({
+								type: 'info',
+								message: '关联失败!'
+							});
+						}
+					},
+
+				});
+
+
+			},
+			handleSizeChange(val) {
+				this.pageSize = val;
+				this.pTableData();
+				console.log(`每页 ${val} 条`);
+
+		    },
+		    handleCurrentChange(val) {
+				this.pageNo = val;
+				this.pTableData();
+				console.log(`当前页: ${val}`);
+		    },
+			resetaddGroupForm(){
+				this.addGroupForm.groupName='';
+				this.addGroupForm.desc='';
+			},
+			allUser(){
+				// console.info("wws"+this.linkPerson.groupPerson[0].userName+"   wws");
+				// console.info("wws"+this.linkPerson.groupPerson+"   wws");
+				// 过滤 人员
+				//window.app.linkPerson 存在
+//				this.linkPerson.groupPerson;		//存在数组1
+//				var arr2 = this.linkPerson.noGroupPerson;	//添加数组2
+
+				for(var i=0;i<this.linkPerson.groupPerson.length;i++){
+					for(var j=0;j<this.allPersonlist.length;j++){
+						console.info(""+this.linkPerson.groupPerson[i].userName);
+						console.info(""+this.allPersonlist[j].userName);
+						if(this.linkPerson.groupPerson[i].userName==this.allPersonlist[j].userName){
+							this.allPersonlist.splice(j,1);
+
+						}
+					}
+				}
+				this.dialogGroup = true;
+			}
+        },
+
+    });
+
+</script>

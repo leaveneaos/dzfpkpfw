@@ -1,0 +1,39 @@
+[
+	{
+		"id":"1",
+		"groupName":"架构组",
+		"groupPerson":[{"name":"张锡斌","account":"zhangxibin"},{"name":"卢金红","account":"lujinhong"}],
+		"noGroupPerson":[{"name":"梁奥","account":"liangao"}],
+		"desc":"架构组的文件管理"
+	}, {
+		"id":"2",
+		"groupName":"数据组",
+		"groupPerson":[{"name":"张锡斌","account":"zhangxibin"},{"name":"卢金红","account":"lujinhong"}],
+		"noGroupPerson":[{"name":"梁奥","account":"liangao"}],
+		"desc":"架构组的文件管理"
+	}, {
+		"id":"3",
+		"groupName":"平台组",
+		"groupPerson":[{"name":"张锡斌","account":"zhangxibin"},{"name":"卢金红","account":"lujinhong"}],
+		"noGroupPerson":[{"name":"梁奥","account":"liangao"}],
+		"desc":"架构组的文件管理"
+	}, {
+		"id":"4",
+		"groupName":"架构组",
+		"groupPerson":[{"name":"张锡斌","account":"zhangxibin"},{"name":"卢金红","account":"lujinhong"}],
+		"noGroupPerson":[{"name":"梁奥","account":"liangao"}],
+		"desc":"架构组的文件管理"
+	}, {
+		"id":"5",
+		"groupName":"架构组",
+		"groupPerson":[{"name":"张锡斌","account":"zhangxibin"},{"name":"卢金红","account":"lujinhong"}],
+		"noGroupPerson":[{"name":"梁奥","account":"liangao"}],
+		"desc":"架构组的文件管理"
+	}, {
+		"id":"6",
+		"groupName":"架构组",
+		"groupPerson":[{"name":"张锡斌","account":"zhangxibin"},{"name":"卢金红","account":"lujinhong"}],
+		"noGroupPerson":[{"name":"梁奥","account":"liangao"}],
+		"desc":"架构组的文件管理"
+	}	
+]

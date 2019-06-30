@@ -1,0 +1,282 @@
+<h2 class="c_right_title">平台菜单权限</h2>
+<div class="p_box">
+	<div>
+		<el-table ref="multipleTable" :data="tableData3" border tooltip-effect="dark" align="center" >
+			<!--<el-table-column align="center" type="selection" width="55">
+			</el-table-column>-->
+			<el-table-column align="center" type="index" label="序号" width="120">
+			</el-table-column>
+			<el-table-column align="center" prop="roleName" label="权限名" >
+			</el-table-column>
+			<el-table-column align="center" prop="linkUser" label="权限管理人员">
+				<template scope="scope">
+					  <span v-for="(item,index) in scope.row.linkUser">{{item.userName}}&ensp;</div>
+				    </span>
+				</template>
+			</el-table-column>
+			</el-table-column>
+			<el-table-column align="center" label="操作" >
+				<template scope="scope">
+					<el-button type="text"  @click.native.prevent="editRow(scope.row)">编辑</el-button>
+					<!--<el-button class="redfont" type="text" @click.native.prevent="deleteRow(scope.$index, tableData3)">删除</el-button>-->
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="paginationTool">
+			<el-pagination
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentChange"
+					:current-page="currentPage"
+					:page-sizes="[10, 20, 30, 40]"
+					:page-size="pageSize"
+					layout="total, sizes, prev, pager, next, jumper"
+					:total="totalNum">
+			</el-pagination>
+		</div>
+    <el-dialog title="编辑" :visible.sync="editAdmin" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-form :model="editAdminForm">
+		  	<el-row>
+		  		<el-col :span="24">
+		  			<el-form-item label="权限名：" :label-width="formLabelWidth">
+				      <el-input  v-model="editAdminForm.roleName" auto-complete="off"></el-input>
+				    </el-form-item>
+		  		</el-col>
+		  		<el-col :span="23">
+		  			<el-form-item label="权限管理人员："  :label-width="formLabelWidth">
+					    <div class="groupboxdel2">
+							<el-tag
+							  v-for="tag3 in editAdminForm.linkUser"
+							  :key="tag3.userName"
+							  :closable="true"
+							  :close-transition="false"
+							  @close="handleCloseDel(tag3)">
+							  {{tag3.userName}}
+							</el-tag>
+						</div>
+				    </el-form-item>
+		  		</el-col>
+		  		<el-col :span="1">
+		  			<el-form-item>
+		  				<img style="margin-left: 5px;" @click="openEditLoadOutUser" src="../images/img/addp.png"/>
+		  			</el-form-item>
+		  		</el-col>
+		  	</el-row>
+		  </el-form>
+		<div slot="footer" class="dialog-footer">
+		    <el-button @click="editAdmin = false">取 消</el-button>
+		    <el-button type="primary" @click="editAdminLinkSave">确 定</el-button>
+		</div>
+   </el-dialog>
+   
+    <el-dialog title="所有成员" :visible.sync="dialogGroup" size="large" >
+	  <el-form :model="groupForm" :inline="true">
+	  	<el-row v-if="false">
+  		   <el-form-item label="条件：" :label-width="formLabelWidth">
+		      <el-input v-model="groupForm.searchName" icon="search" auto-complete="off"></el-input>
+		   </el-form-item>
+  			<el-form-item>
+  			  <el-button type="primary" icon="search" @click="search">查询</el-button>
+  			</el-form-item>
+	  	</el-row>
+	  </el-form>
+	  <el-table :data="allPersonlist" border >
+	    <el-table-column align="center" property="userName" label="姓名" width="150"></el-table-column>
+	    <el-table-column align="center" property="accountName" label="账户" width="200"></el-table-column>
+	    <el-table-column align="center" property="" label="部门" v-if="false"></el-table-column>
+	    <el-table-column align="center" property="group" label="组别"></el-table-column>
+	    <el-table-column height="22" align="center"  label="操作" >
+       		<template scope="scope">
+				<el-button class="scopebtn" type="primary"  @click.native.prevent="saveRow(scope.row,scope.$index, allPersonlist)" >添加</el-button>
+			</template>
+        </el-table-column>
+	  </el-table>
+	  
+	  <div slot="footer" class="dialog-footer">
+	    <el-button @click="dialogGroup = false">取 消</el-button>
+	    <el-button type="primary" @click="dialogGroup = false">确 定</el-button>
+	  </div>
+    </el-dialog>
+
+</div>
+
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {	
+            tableData3: [],
+			roleId:'',
+			pageNo:1,
+			pageSize:10,
+			totalNum:0,
+		    multipleSelection: [],
+		    formLabelWidth:"110px",
+		    editAdminForm:{
+				roleName:'',
+				linkUser:[]
+		    },
+		    editAdmin:false,
+		    allGroup:false,
+		    allGroupList:[
+		        {"name":"稽查组"},
+		        {"name":"知识云库组"},
+		        {"name":"票流组"}
+	        ],
+	        groupForm:{
+	          searchName:''
+	        },
+	        dialogGroup:false,
+	        allPersonlist:[],
+			currentPage:1
+        },
+
+        mounted(){
+			this.pTableData();
+        },
+        methods: {
+			pTableData(){
+				const that=this;
+				$.ajax({
+					type:"get",
+					url:"role/puserlist?pageNo="+that.pageNo+"&&pageNo="+that.pageSize,
+					async:true,
+					dataType:"json",
+					success:function(res){
+						$.each(res.data.list, function(idx,item) {
+							window.app.tableData3 = res.data.list;
+							that.totalNum = res.data.total;
+						})	
+					},
+					error:function(res){
+						alert("p_tabledata.json加载失败")
+					}
+				});
+			},
+			allPersonTableData(){
+				$.ajax({
+					type:"get",
+					url:"/role/out/"+this.roleId,
+					dataType:"json",
+					success:function(res){
+						window.app.allPersonlist = res.data;
+					},
+					error:function(){
+						alert("加载失败")
+					}
+			   });
+			},
+			deleteRow(index, rows) {
+				this.rowsDate = rows;
+		        if(rows[index].adminName == "超级管理员"){
+		        	this.errorOpen();
+		        }else{
+		        	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+			          confirmButtonText: '确定',
+			          cancelButtonText: '取消',
+			          type: 'warning'
+			        }).then(() => {
+			          this.$message({
+			            type: 'success',
+			            message: '删除成功!'
+			          });
+			          rows.splice(index, 1);
+			        }).catch(() => {
+			          this.$message({
+			            type: 'info',
+			            message: '已取消删除'
+			          });          
+			        });		        	
+		        }
+		    },
+		    handleCloseDel(tag3) {
+		        this.editAdminForm.linkUser.splice(this.editAdminForm.linkUser.indexOf(tag3),1);
+		        this.$message({
+		          showClose: true,
+		          message: '恭喜你，移除成功',
+		          type: 'success'
+		        });
+		    },
+		    editOpen() {
+		        this.$message({
+		          message: '抱歉，你没有编辑权限',
+		          type: 'warning'
+		        });		        
+		    },
+		    errorOpen() {
+		        this.$message({
+		          message: '抱歉，你没有删除权限',
+		          type: 'warning'
+		        });		        
+		    },
+		    saveRow(row,index,rows){
+				this.$confirm('即将添加人员, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+				  console.info("row = "+row +" , id = "+row.id+", row.")
+		          window.app.editAdminForm.linkUser.push(row);
+		          rows.splice(index, 1);
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消添加'
+		          });          
+		        });   
+			},
+			openEditLoadOutUser(){
+				this.dialogGroup = true;
+				console.info("this.roleId = "+this.roleId);
+				this.allPersonTableData();
+			},
+			editRow(row){
+				this.editAdminForm.linkUser = row.linkUser;
+				this.editAdminForm.roleName=row.roleName;
+				this.roleId=row.id;
+				this.editAdmin = true;
+			},
+			editAdminLinkSave(){
+				const that=this;
+				var userIds="";
+				for(var i=0;i<this.editAdminForm.linkUser.length;i++){
+					if(i==0){
+						userIds=this.editAdminForm.linkUser[i].id;
+					}else{
+						userIds+=","+this.editAdminForm.linkUser[i].id;
+					}
+				}
+				$.ajax({
+					type:"get",
+					url:"/role/user/add/?roleId="+that.roleId+"&userIds="+userIds,
+					dataType:"json",
+					success:function(res){
+						that.editAdmin = false;
+						that.$message({
+							type: 'info',
+							message: '添加成功'
+						});
+					},
+					error:function(){
+						that.editAdmin = false;
+						that.$message({
+							type: 'info',
+							message: '添加失败'
+						});
+					}
+				});
+			},
+			handleSizeChange(val) {
+				this.pageSize = val;
+				this.pTableData();
+				console.log(`每页 ${val} 条`);
+			},
+			handleCurrentChange(val) {
+				this.pageNo = val;
+				this.pTableData();
+				console.log(`当前页: ${val}`);
+			}
+        }
+
+    });
+
+</script>

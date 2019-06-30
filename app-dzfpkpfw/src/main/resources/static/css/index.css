@@ -1,0 +1,58 @@
+/*主页*/
+
+.container{width: 100%;height: 100%;margin: 0px;padding: 0px;}
+.c_header{width: 100%;height: 50px;line-height: 50px;background-color: #f8f8f8;border-bottom: 1px solid #e7e7e7;box-sizing: border-box;}
+.c_header h3{ float:left;height: 50px;line-height: 50px;}
+.c_header li:hover,.c_ul li:hover{cursor: pointer;}
+.c_header .c_user{ float:right;}
+.container .dropdown.c_user .dropdown-menu{left: -73px !important;}
+
+.c_section{width: 100%;height: 100%;}
+.c_section_left{width: 15%;height: 100%;float:left;padding: 0px;background: #F8F8F8;border-right: 1px solid #e7e7e7;box-sizing: border-box;}
+.c_section_right{width: 85%;height: 100%;float: left;}
+.c_ul{background: #f8f8f8;margin: 0px;padding: 0px;}
+.c_ul li{height: 40px;line-height:40px;border-bottom: 1px solid #e7e7e7;padding-left: 15px;}
+.c_ul li:hover{background: #e7e7e7;}
+.c_ul li a:hover{background: #e7e7e7;text-decoration: none;}
+.d_rightBox{padding: 15px;height: 100%;}
+.c_right_title{padding-bottom: 9px;margin: 20px 0 20px;border-bottom: 1px solid #eee;font-family: inherit;font-weight: 500;line-height: 1.1;color:#3c3c3c;}
+
+/*修改密码*/	
+.changepassword{padding: 0 17%;}
+.changepassword .row .pwdbtn{border: none;}	
+.changepassword .row .pwdinput{border-radius: 5px;border-color: #dcdcdc;}
+.changepassword .row .divpadding{margin-bottom: 15px;}
+
+/*用户信息*/
+.u_box{border: 1px solid #e7e7e7;width: 100%;height: 80%;border-radius: 5px;background: #FFFFFF;box-shadow: 0 1px 1px 0 rgba(0,0,0,0.10);}
+.u_left{width: 30%;height: 100%;vertical-align: middle;padding-top:5%;text-align:center;float: left;}
+.u_right{width: 70%;height: 100%;float: left;border-left:1px solid #e7e7e7;box-sizing: border-box;}
+.u_ul_text{width: 100%;height: 100%;padding:20px;}
+.u_ul_text .li_text{width:100%;height:30px;line-height:30px;color:#3c3c3c;}
+
+/*平台菜单权限*/
+.p_box{width: 100%;padding: 15px;}
+.p_box .table,.p_box .table .p_tr1 th{text-align: center;}
+.p_box .table a{width: 20px;padding: 5px;cursor: pointer;}
+.p_box .table .table_btndel{width: 20px;color: red;}
+
+
+/*用户管理*/
+.borderbtn{border: none;}
+.g_form .input-group{margin-bottom: 15px;}
+
+/*组别*/
+.noborder input{border: none;}
+.redfont{color: red !important;}
+.paginationTool{float: right;padding: 5px;}
+.groupboxdel2{width: 100%;height: 70px;border:1px solid #bfcbd9;border-radius:4px;overflow: auto;}
+.groupboxdel2 .el-tag{background: #e1e3e7;color: #000;margin: 3px;padding: 0px 1px ;}
+.groupboxdel3{width: 100%;height: 150px;border:1px solid #bfcbd9;border-radius:4px;overflow: auto;}
+.groupboxdel3 .el-tag{background: #e1e3e7;color: #000;margin: 3px;padding: 0px 1px ;}
+
+
+
+/*svn管理*/
+.groupboxdel{width: 107%;height: 150px;border:1px solid #bfcbd9;border-radius:4px;overflow: auto;}
+.groupboxdel .el-tag{background: #e1e3e7;color: #000;margin: 3px;padding: 0px 1px ;}
+.scopebtn{height: 20px !important;line-height: 6px !important;font-size: 12px !important;padding: 4px 8px !important;}

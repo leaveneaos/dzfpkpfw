@@ -1,0 +1,12 @@
+/*登录页*/
+html,body{width: 100%;height: 100%;}
+.loginBox{width: 100%;height: 100%;background:url(../images/login.jpg) no-repeat;background-size:cover;}
+.loginBox .l_box{width: 100%;height: 100%;}
+.loginBox .l_box .l_form{width: 350px;height: auto;margin: 0px auto;padding-top: 15%;text-align: center;}
+.loginBox .l_box .l_form .form-control{height: 40px;border-radius:50px;border-color: #fff;}
+.loginBox .l_box .l_form .btn{width:100px;height: 40px;border-radius:50px;font-size: 16px;}
+.loginBox .l_box .l_form .l_title{text-align: center;}
+.loginBox .l_box .l_form .l_info1{color: red;height:16px;font-size: 14px;text-align: left;margin-left: 5px;}
+.loginBox .l_box .l_form .l_info2{color: red;height:16px;font-size: 14px;text-align: left;margin-left: 5px;}
+#submitBtn:active,#submitBtn:visited,#submitBtn:focus{border: none;}
+		

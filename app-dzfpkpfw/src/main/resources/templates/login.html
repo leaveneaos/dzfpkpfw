@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>登录</title>
+		<link rel="stylesheet" type="text/css" href="../css/login.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="../assets/bootstrap/dist/css/bootstrap.min.css"/>
+		<script src="../assets/jquery-1.12.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../assets/bootstrap/dist/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="loginBox">
+			<div class="l_box">
+				<form class="l_form">
+				      <h3 class="l_title">发票开票信息管理系统<br /></h3>
+					  <div class="form-group">
+					    <input type="userName" class="form-control" id="userName" placeholder="登录名">
+					    <p class="l_info1"></p>
+					  </div>
+					  <div class="form-group">
+					    <input type="password" class="form-control" id="password" placeholder="密码">
+					    <p class="l_info2"></p>
+					  </div>
+					  <button type="button" id="submitBtn" class="btn btn-primary">登录</button>
+				</form>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		$(function(){
+			var $userName = $("#userName")
+			var $password = $("#password");
+			var $submitBtn = $("#submitBtn");
+			var $info1 = $(".l_info1");
+			var $info2 = $(".l_info2");
+			//判断
+			$userName.focus(function(){
+				$userName.val("");
+			});			
+			$password.focus(function(){
+				$password.val("");
+			});			
+			$userName.blur(function(){
+				if ($userName.val() == "") {
+					$info1.html("用户名不能为空");
+				}else{
+					$info1.html("");
+				}
+			});	
+			$password.blur(function(){
+				if ($password.val() == "") {
+					$info2.html("密码不能为空");
+				}else{
+					$info2.html("");
+				}
+			});			
+			$submitBtn.click(function(){
+				var data = {
+					'password':$password.val(),
+					'accountName':$userName.val()
+				}
+				$.post("/login",data,function(result){
+					if(result.success){
+						console.log(result.success)
+						window.location.href="/";
+						sessionStorage.setItem('accountName',$userName.val());
+						sessionStorage.setItem('accountId',result.data.accountId);
+					}else{
+						alert("登录失败:"+result.errorMsg);
+					}
+				});
+			});
+			
+		});
+		$(document).keyup(function(event){
+			if(event.keyCode ==13){
+				$("#submitBtn").trigger("click");
+			}
+		});
+	</script>
+</html>

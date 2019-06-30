@@ -1,0 +1,533 @@
+<h2 class="c_right_title">SVN管理</h2>
+<div class="p_box">
+	<el-button type="primary" @click="dialogLimitAdd = true" style="margin-bottom: 10px;">添加权限</el-button>
+	<div>
+		<el-table ref="multipleTable" :data="tableData2" border tooltip-effect="dark" align="center" >
+			<!--<el-table-column align="center" type="selection" width="55"></el-table-column>-->
+			<el-table-column align="center" type="index" label="序号" width="80"> </el-table-column>
+			<el-table-column align="center" prop="序号" label="序号" v-if="false"  width="80" ></el-table-column>
+			<el-table-column align="center" prop="limitName" label="权限名" width="100" ></el-table-column>
+			<el-table-column align="center" label="组别" >
+				<template scope="scope">
+					  <span v-for="(item,index) in scope.row.linkSvn">{{item.name}}</div>
+				    </span>
+				</template>
+			</el-table-column>
+			<el-table-column align="center" prop="path" label="权限路径" ></el-table-column>
+			<el-table-column align="center" prop="desc" label="权限描述" width="150"></el-table-column>
+			<el-table-column align="center" label="操作" >
+				<template scope="scope">
+					<el-button type="text" size="small" @click.native.prevent="editRow(scope.row)" >编辑</el-button>
+					<el-button class="redfont" type="text" @click.native.prevent="deleteRow(scope.row,scope.$index, tableData2)">删除</el-button>
+					<el-button type="text" size="small" @click="linkGroupBtn(scope.$index,scope.row)">关联组</el-button>
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="paginationTool">
+		<el-pagination
+		      @size-change="handleSizeChange"
+		      @current-change="handleCurrentChange"
+		      :current-page="currentPage"
+		      :page-sizes="[10, 20, 30, 40]"
+		      :page-size="pageSize"
+		      layout="total, sizes, prev, pager, next, jumper"
+		      :total="totalNum">
+		   </el-pagination>			
+		</div>
+		
+		<el-dialog title="添加权限" :visible.sync="dialogLimitAdd" >
+		  <el-form :model="limitForm" :rules="ruleLimit"  ref="limitForm">
+		  	<el-row>
+		  		<el-col :span="24">
+		  			<el-form-item label="权限名：" :label-width="formLabelWidth" prop="limitName">
+				      <el-input v-model="limitForm.limitName" auto-complete="off"></el-input>
+				    </el-form-item>
+		  		</el-col>
+		  		<el-col :span="24">
+		  			<el-form-item label="权限路径：" :label-width="formLabelWidth" prop="path">
+				      <el-input
+						  type="textarea"
+						  :rows="2"
+						  placeholder="请输入内容"
+						  v-model="limitForm.path">
+						</el-input>
+				    </el-form-item>
+		  		</el-col>
+		  		<el-col :span="24">
+		  			<el-form-item label="权限描述："  :label-width="formLabelWidth" prop="desc">
+				      <el-input
+						  type="textarea"
+						  :rows="2"
+						  placeholder="请输入内容"
+						  v-model="limitForm.desc">
+						</el-input>
+				    </el-form-item>
+		  		</el-col>
+		  	</el-row>
+		  </el-form>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="resetForm('limitForm')">取 消</el-button>
+		    <el-button type="primary" @click="limitAdd">确 定</el-button>
+		  </div>
+	    </el-dialog>
+	   
+		<el-dialog title="编辑权限" :visible.sync="editLimit" >
+		  <el-form :model="editLimitForm">
+		  	<el-row>
+		  		<el-col :span="24">
+		  			<el-form-item label="权限名：" :label-width="formLabelWidth">
+				      <el-input v-model="editLimitForm.limitName" auto-complete="off"></el-input>
+				    </el-form-item>
+		  		</el-col>
+		  		<el-col :span="24">
+		  			<el-form-item label="权限路径：" :label-width="formLabelWidth">
+				      <el-input
+						  type="textarea"
+						  :rows="2"
+						  placeholder="请输入内容"
+						  v-model="editLimitForm.path">
+						</el-input>
+				    </el-form-item>
+		  		</el-col>
+		  		<el-col :span="24">
+		  			<el-form-item label="权限描述："  :label-width="formLabelWidth">
+				      <el-input
+						  type="textarea"
+						  :rows="2"
+						  placeholder="请输入内容"
+						  v-model="editLimitForm.desc">
+						</el-input>
+				    </el-form-item>
+		  		</el-col>
+		  	</el-row>
+		  </el-form>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="editLimit = false">取 消</el-button>
+		    <el-button type="primary" @click="editRowSave">确 定</el-button>
+		  </div>
+	    </el-dialog>	   
+	   
+	    <el-dialog title="关联组" :visible.sync="linkGroup">
+		  <el-form :model="scopeGroup">
+			  <el-button type="primary" @click="allGroupPerson" style="margin-bottom: 10px;">添加组</el-button>
+			  <el-row>
+				  <el-form-item label="svn权限路径：" :label-width="formLabelWidth">
+					  <el-input class="noborder" v-model="scopeGroup.limitName" auto-complete="off"></el-input>
+				  </el-form-item>
+			  </el-row>
+	    	<el-row>
+				<el-table :data="allRoleGroupList" border >//groupId groupName desc rwPermission
+					<el-table-column height="22" align="center" type="index" label="序号" ></el-table-column>
+					<el-table-column height="22" align="center" v-if="false" property="groupId" label="groupId" ></el-table-column>
+					<el-table-column height="22" align="center" property="groupName" label="组名" ></el-table-column>
+					<el-table-column height="22" align="center" property="rwPermission" label="读写权限" :formatter="keyFormat"></el-table-column>
+					<el-table-column height="22" align="center"  label="操作" >
+						<template scope="scope">
+							<el-button class="scopebtn" type="primary"  @click.native.prevent="deleteRoleGroupRow(scope.row,scope.$index, allRoleGroupList)" >删除</el-button>
+							<el-button class="scopebtn" type="primary"  @click.native.prevent="readRoleGroupRow(scope.row,scope.$index, allRoleGroupList)" >读权限</el-button>
+							<el-button class="scopebtn" type="primary"  @click.native.prevent="rwRoleGroupRow(scope.row,scope.$index, allRoleGroupList)" >读写权限</el-button>
+							<el-button class="scopebtn" type="primary"  @click.native.prevent="disableRoleGroupRow(scope.row,scope.$index, allRoleGroupList)" >权限禁用</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+	    	</el-row>
+		  </el-form>
+		  <div slot="footer"  class="dialog-footer">
+		    <el-button @click="linkGroup = false">取 消</el-button>
+		    <el-button type="primary" @click="linkGroupSave()">确 定</el-button>
+		  </div>
+	   </el-dialog> 
+	   
+	    <el-dialog title="所有组" :visible.sync="allGroup">
+			<!-- 添加查询 功能 -->
+			<el-form :model="groupForm" :inline="true">
+				<el-form-item label="条件：" :label-width="formLabelWidth">
+					<el-input v-model="groupForm.searchName" icon="search" placeholder="请输入组名"></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" icon="search" @click="search">查询</el-button>
+				</el-form-item>
+			</el-form>
+	   		<el-table :data="allGroupList" border >
+		       <el-table-column height="22" align="center" type="index" label="序号" ></el-table-column>
+			   <el-table-column height="22" align="center" v-if="false" property="序号" label="序号" ></el-table-column>
+			   <el-table-column height="22" align="center" property="name" label="组名" ></el-table-column>
+		       <el-table-column height="22" align="center"  label="操作" >
+		       		<template scope="scope">
+						<el-button class="scopebtn" type="primary"  @click.native.prevent="saveRow(scope.row,scope.$index, allGroupList)" >添加</el-button>
+					</template>
+		       </el-table-column>
+		    </el-table>
+		    <div slot="footer"  class="dialog-footer">
+		      <el-button @click="allGroup = false">取 消</el-button>
+		      <el-button type="primary" @click="allGroup = false">确 定</el-button>
+		    </div>
+	   </el-dialog>
+
+	   
+	</div>
+
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {	
+            tableData2: [],
+			pageNo:1,
+			pageSize:10,
+			totalNum:0,
+			permissionId:'',
+            dialogLimitAdd:false,
+            linkGroup:false,
+            allGroup:false,
+			groupForm:{
+				searchName:'',
+			},
+            limitForm:{
+            	limitName:'',
+            	path:'',
+            	desc:''
+            },
+            ruleLimit:{
+            	limitName: [{
+					required: true,
+					message: '请输入权限名',
+					trigger: 'blur'
+				}],
+				path: [{
+					required: true,
+					message: '请输入权限路径',
+					trigger: 'blur'
+				}],
+				desc: [{
+					required: false,
+					message: '请选择权限描述',
+					trigger: 'blur'
+				}]
+            },
+            editLimit:false,
+            editLimitForm:{
+				id:'',
+            	limitName:'',
+            	path:'',
+            	desc:''
+            },
+            group:{
+	            search:'',
+	            bumen:'',
+	            sex:'',
+	            zubie:'',
+	        },
+	        scopeGroup:{
+	        	id:'',
+	        	name:'',
+	        	limitName:'',
+	        	linkSvn:[],
+	        	linkData:'',
+	        	noLinkSvn:[],
+	        	type: 'gray'
+	        },
+	        allGroupList:null,
+			allRoleGroupList:[],
+            formLabelWidth:"100px",
+            currentPage:1,
+            tag1:'',
+            tag2:'',
+            
+        },
+
+        mounted(){
+			this.svnTableData();			
+        },
+        methods: {
+			keyFormat(row, column){
+				var key=row[column.property];
+				if (key == undefined) {
+					return "无";
+				}else if(key==0){
+					return "无权限";
+				}else if(key==1){
+					return "只读";
+				}else if(key==2){
+					return "读写";
+				}
+			},
+			search(){
+				var _groupForm=this.groupForm;
+				$.get("/group/pAllList",_groupForm,function(result){
+					if(result.success){
+						window.app.allGroupList = result.data;
+					}
+				});
+			},
+			svnTableData(){
+				const that=this;
+				$.ajax({
+					type:"get",
+					url:"/svn/plist?pageNo="+that.pageNo+"&&pageNo="+that.pageSize,
+					async:true,
+					dataType:"json",
+					success:function(res){
+						window.app.tableData2 = res.data.list;
+						that.totalNum = res.data.total;
+					}
+					
+				});
+			},
+			linkGroupBtn(index,row){
+				const that=this;
+				window.app.scopeGroup = row;
+				window.app.permisionId=row.id;
+				//  获取该权限下的组 集合
+				//groupId groupName desc rwPermission
+				$.ajax({
+					type:"get",
+					url:"/svn/roleGroupList?permisionId="+window.app.permisionId,
+					async:true,
+					dataType:"json",
+					success:function(res){
+						window.app.allRoleGroupList = res.data;
+						that.linkGroup = true;
+					}
+				});
+
+
+			},
+			allGroupPerson(){
+				this.allGroup = true;
+				$.ajax({
+					type:"get",
+					url:"/group/pAllList",
+					async:true,
+					dataType:"json",
+					success:function(res){
+						$.each(res.data, function(idx,item) {
+							window.app.allGroupList = res.data;
+						})	
+					}	
+				});
+			},
+			limitAdd(){
+				const that = this;
+				if(this.limitForm.limitName === '' || this.limitForm.path === ''|| this.limitForm.path === '' ){
+					this.$message({
+		            type: 'info',
+		            message: '请输入完整信息!'
+		          });
+				}else{
+					const that=this;
+					//提交权限信息数据
+					var _limitForm=new Object();
+					_limitForm.permissionName=window.app.limitForm.limitName;
+					_limitForm.path=window.app.limitForm.path;
+					_limitForm.desc=window.app.limitForm.desc;
+					$.get("/svn/add",_limitForm,function(result){
+						if(result.success){
+							console.info(result.data.permissionId);
+							that.$message({
+								type: 'success',
+								message: '添加成功!'
+							});
+							that.resetForm('limitForm');
+							that.svnTableData();
+						}else{
+							that.$message({
+								type: 'error',
+								message: '添加失败!'
+							});
+						}
+					});
+
+
+				}
+			},
+			handleCloseDel(tag1) {
+		        this.scopeGroup.linkSvn.splice(this.scopeGroup.linkSvn.indexOf(tag1),1);
+		        this.$message({
+		          showClose: true,
+		          message: '恭喜你，移除成功',
+		          type: 'success'
+		        });
+		    },
+		    handleCloseAdd(tag2) {
+		        this.scopeGroup.noLinkSvn.splice(this.scopeGroup.linkSvn.indexOf(tag2), 1);
+		        this.$message({
+		          showClose: true,
+		          message: '恭喜你，移除成功',
+		          type: 'success'
+		        });
+		    },
+		    addOn(){
+		    	var arr1 = this.scopeGroup.linkSvn;		//存在数组1    	
+		    	var arr2 = this.scopeGroup.noLinkSvn;	//添加数组2
+		    	var arrayConcat = arr2.concat(arr1);    //连接数组1+2
+				this.scopeGroup.linkSvn = arrayConcat;  
+		    	this.scopeGroup.noLinkSvn = [];		    	
+			},
+			saveRow(row,index,rows){
+				this.$confirm('即将添加人员, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+				var obj=new Object();//pAllList
+				obj.groupId=row.id;
+				obj.groupName=row.name;
+				obj.rwPermission=1;
+				window.app.allRoleGroupList.push(obj);
+				rows.splice(index, 1);
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消添加'
+		          });          
+		        }); 	
+			},
+			editRow(row){
+				//console.log("editRow",row);
+				if(row.id==null||typeof(row.id)=="undefined"){
+					this.$message({
+						type: 'error',
+						message: '请重新登录后进行编辑!'
+					});
+					return;
+				}
+				this.editLimit = true;
+				this.editLimitForm.id = row.id;
+				this.editLimitForm.limitName = row.limitName;
+				this.editLimitForm.path = row.path;
+				this.editLimitForm.desc = row.desc;
+			},
+			editRowSave(){
+				const  that=this;
+				var _limitForm=new Object();
+				_limitForm.permissionName=this.editLimitForm.limitName;
+				_limitForm.path=this.editLimitForm.path;
+				_limitForm.desc=this.editLimitForm.desc;
+				_limitForm.id=this.editLimitForm.id;
+				$.get("/svn/update",_limitForm,function(result){
+					if(result.success){
+						that.$message({
+							type: 'success',
+							message: '编辑成功!'
+						});
+						that.svnTableData();
+						that.editLimit = false
+					}else{
+						that.$message({
+							type: 'error',
+							message: '编辑失败!'
+						});
+					}
+
+				});
+
+			},
+			deleteRow(row,index, rows) {
+				const  that=this;
+				console.info("row.id = "+row.id);
+		        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+					 $.ajax({
+						type:"get",
+						url:"/svn/delete/"+row.id,
+						async:true,
+						dataType:"json",
+						success:function(res){
+							if(res.success){
+								that.$message({
+									type: 'success',
+									message: '删除成功!'
+								});
+								that.svnTableData();
+							}else{
+								that.$message({
+									type: 'error',
+									message: '删除失败!'
+								});
+							}
+						},
+
+					});
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消删除'
+		          });          
+		        });		       
+		    },
+			linkGroupSave(){
+				const that = this;
+				var permissionIdTem=window.app.permisionId;
+				var groupIds="";
+				var rwPermissions="";
+				for(var i=0;i<window.app.allRoleGroupList.length;i++){
+					if(i==0){
+						groupIds=window.app.allRoleGroupList[i].groupId;
+						rwPermissions=window.app.allRoleGroupList[i].rwPermission;
+					}else{
+						groupIds+=","+window.app.allRoleGroupList[i].groupId;
+						rwPermissions+=","+window.app.allRoleGroupList[i].rwPermission;
+					}
+				}
+				console.info("permissionIdTem = "+permissionIdTem+", groupIds = "+groupIds+",rwPermissions ="+rwPermissions);
+				$.ajax({
+					type:"get",
+					url:"/svn/addGroupToPermission?permisionId="+permissionIdTem+"&groupIds="+groupIds+"&rwPermissions="+rwPermissions,
+					async:true,
+					dataType:"json",
+					success:function(res){
+						if(res.success){
+							that.$message({
+								type: 'info',
+								message: '关联成功!'
+							});
+							that.linkGroup = false;
+						}else{
+							that.$message({
+								type: 'info',
+								message: '关联失败!'
+							});
+						}
+						that.svnTableData();
+					},
+
+				});
+
+			},
+		    //重置
+		    resetForm(formName) {
+		        this.$refs[formName].resetFields();
+		        this.dialogLimitAdd = false;
+		    },
+			handleSizeChange(val) {
+				this.pageSize = val;
+		        console.log(`每页 ${val} 条`);
+				this.svnTableData();
+		    },
+		    handleCurrentChange(val) {
+				this.pageNo = val;
+		        console.log(`当前页: ${val}`);
+				this.svnTableData();
+		    },
+			disableRoleGroupRow(row,index, rows){
+				window.app.allRoleGroupList[index].rwPermission=0;
+			},
+			readRoleGroupRow(row,index, rows){
+				window.app.allRoleGroupList[index].rwPermission=1;
+			},
+			rwRoleGroupRow(row,index, rows){
+				window.app.allRoleGroupList[index].rwPermission=2;
+			},
+			deleteRoleGroupRow(row,index, rows){
+				window.app.allRoleGroupList.splice(index,1);
+			}
+        },
+
+    });
+
+</script>

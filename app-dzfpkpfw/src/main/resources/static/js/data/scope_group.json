@@ -1,0 +1,12 @@
+[
+	{
+		"name": "权限1",
+		"allGroupDel": "架构组，平台组",
+		"allGroupAdd": "产品组1"
+	},
+	{
+		"name": "权限2",
+		"allGroupDel": "数据组，平台组",
+		"allGroupAdd": "算法组"
+	}
+]

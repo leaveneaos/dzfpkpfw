@@ -1,0 +1,561 @@
+<h2 class="c_right_title">角色管理</h2>
+<div class="p_box">
+	<el-button type="primary" @click="roleAddBtn">添加角色</el-button>
+	<el-button type="primary" icon="search" @click="searchForm">查询</el-button>
+  	<el-form :model="roleManage" :inline="true">
+		<el-form-item label="条件：" :label-width="formLabelWidth">
+	      <el-input   v-model="roleManage.roleName"  placeholder="请选择角色名称"></el-input>
+	   </el-form-item>
+		<el-form-item label="是否有效：" :label-width="formLabelWidth">
+			<el-select v-model="roleManage.useful" placeholder="请选择">
+				<el-option v-for="item in usefulOptionsCopy" :key="item.key" :label="item.label" :value="item.value"></el-option>
+			</el-select>
+		</el-form-item>
+    </el-form>
+	  
+	<el-table ref="multipleTable" :data="roleData" border tooltip-effect="dark" align="center">
+		<!--<el-table-column align="center" type="selection" width="55">			
+		</el-table-column>-->
+		<el-table-column align="center" type="index" label="序号" width="80">
+		</el-table-column>
+		<el-table-column align="center" prop="roleName" label="角色名"  >
+		</el-table-column>
+		<el-table-column align="center" prop="linkMenu" label="角色菜单">
+			<template scope="scope">
+				<span v-for="(item,index) in scope.row.linkMenu">{{item.menuName}}&ensp;</div>
+				</span>
+			</template>
+		</el-table-column>
+		<el-table-column align="center" prop="desc" label="角色描述" >
+		</el-table-column>
+		<el-table-column align="center" prop="useful" label="是否有效" :formatter="keyFormat">
+		</el-table-column>
+		<el-table-column align="center" label="操作"  width="200" >
+			<template scope="scope">
+				<el-button type="text" size="small" v-if="scope.row.useful==1"
+						   @click.native.prevent="disablerole(scope.row.id)">禁用</el-button>
+				<el-button type="text" size="small" v-if="scope.row.useful==0"
+						   @click.native.prevent="startrole(scope.row.id)">启用</el-button>
+				<el-button type="text" size="small" @click.native.prevent="roleEdit(scope.row)">编辑</el-button>
+				<el-button type="text" size="small" @click.native.prevent="linkMenu(scope.row)">关联菜单</el-button>
+				<el-button class="redfont" type="text" size="small" @click.native.prevent="deleteRow(scope.row.id)">删除</el-button>
+			</template>
+		</el-table-column>
+	</el-table>
+	<div class="paginationTool">
+		<el-pagination
+	      @size-change="handleSizeChange"
+	      @current-change="handleCurrentChange"
+	      :current-page="currentPage"
+	      :page-sizes="[10, 20, 30, 40]"
+		  :page-size="roleManage.pageSize"
+	      layout="total, sizes, prev, pager, next, jumper"
+	      :total="totalNum">
+	   </el-pagination>			
+	</div>
+		
+	<el-dialog title="添加角色" :visible.sync="roleAdd" :before-close="resetForm">
+	  <el-form :model="roleAddFrom" :rules="rules" ref="roleAddFrom">
+	  	<el-row>
+	  		<el-col :span="16" :offset="4">
+	  			<el-form-item label="角色名称：" :label-width="formLabelWidth" prop="roleName">
+			      <el-input v-model="roleAddFrom.roleName" auto-complete="off"></el-input>
+			    </el-form-item>
+	  		</el-col>
+	  		<el-col :span="16" :offset="4">
+	  			<el-form-item label="角色描述：" :label-width="formLabelWidth" prop="desc">
+			      <el-input v-model="roleAddFrom.desc" auto-complete="off"></el-input>
+			    </el-form-item>
+	  		</el-col>
+	  	</el-row>
+	  </el-form>
+	  <div slot="footer" class="dialog-footer">
+	     <el-button @click="resetForm">取 消</el-button>
+	    <el-button type="primary" @click="saverole('roleAddFrom')">确 定</el-button>
+	  </div>
+    </el-dialog>
+
+    <el-dialog title="编辑角色" :visible.sync="roleEdit1" >
+	  <el-form v-model="roleEditForm"  ref="roleEditForm">
+	  	<el-row>
+	  		<el-col :span="16" :offset="4" >
+	  			<el-form-item label="角色名称：" :label-width="formLabelWidth" prop="roleName">
+			      <el-input v-model="roleEditForm.roleName" auto-complete="off"></el-input>
+			    </el-form-item>
+	  		</el-col>
+	  		<el-col :span="16" :offset="4">
+	  			<el-form-item label="角色描述：" :label-width="formLabelWidth" prop="desc">
+			      <el-input v-model="roleEditForm.desc"   auto-complete="off"></el-input>
+			    </el-form-item>
+	  		</el-col>
+	  	</el-row>
+	  </el-form>
+	  <div slot="footer" class="dialog-footer">
+	    <el-button @click="roleEdit1 = false">取 消</el-button>
+	    <el-button type="primary" @click="commitEdit">确 定</el-button>
+	  </div>
+    </el-dialog>
+
+	<el-dialog title="关联菜单权限" :visible.sync="linkMenuDialog" :before-close="resetLinkForm" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-form :model="linkMenuFrom" :rules="rules" ref="linkMenuFrom">
+			<el-row>
+				<el-col :span="24">
+					<el-form-item label="角色名称：" :label-width="formLabelWidth">
+						<el-input class="noborder" v-model="linkMenuFrom.roleName" auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="11">
+					<el-form-item  label="所有菜单：" :label-width="formLabelWidth">
+						<div class="groupboxdel3">
+							<el-tag
+									v-for="tag2 in linkMenuFrom.linkMenu"
+									:key="tag2.menuName"
+									:closable="true"
+									:close-transition="false"
+									@close="handleCloseDelPerson1(tag2)">
+								{{tag2.menuName}}
+							</el-tag>
+						</div>
+						<!--<el-button style="margin-top: 10px ;"  type="primary">移除成员</el-button>-->
+					</el-form-item>
+				</el-col>
+				<el-col :span="11">
+					<el-form-item label="添加菜单："  :label-width="formLabelWidth">
+						<div class="groupboxdel3">
+							<el-tag
+									v-for="tag3 in linkMenuFrom.noLinkMenu"
+									:key="tag3.menuName"
+									:closable="true"
+									:close-transition="false"
+									@close="handleCloseDelPerson2(tag3)">
+								{{tag3.menuName}}
+							</el-tag>
+						</div>
+						<el-button style="margin-top: 10px ;" type="primary" @click="addOn">添加菜单</el-button>
+					</el-form-item>
+				</el-col>
+				<el-col :span="1">
+					<el-form-item>
+						<img style="margin-left:5px;" @click="openMenuLinkRole" src="../images/img/addp.png"/>
+					</el-form-item>
+				</el-col>
+			</el-row>
+		</el-form>
+		<div slot="footer" class="dialog-footer">
+			<el-button @click="resetLinkForm">取 消</el-button>
+			<el-button type="primary" @click="linkMenuSave">确 定</el-button>
+		</div>
+	</el-dialog>
+	<!-- 所有菜单-->
+	<el-dialog title="所有菜单" :visible.sync="dialogLinkMenuList" size="large" >
+		<el-form :model="menuForm" :inline="true">
+			<el-form-item label="条件：" :label-width="formLabelWidth">
+				<el-input v-model="menuForm.searchName" icon="search" placeholder="请输入菜单名"></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" icon="search" @click="searchMenu">查询</el-button>
+			</el-form-item>
+		</el-form>
+		<el-table :data="allMenuList" border >
+			<el-table-column align="center" property="menuName" label="菜单名称" width="150"></el-table-column>
+			<el-table-column align="center" property="menuPath" label="菜单路径" width="200"></el-table-column>
+			<el-table-column height="22" align="center"  label="操作" >
+				<template scope="scope">
+					<el-button class="scopebtn" type="primary"  @click.native.prevent="saveRow(scope.row,scope.$index, allMenuList)" >添加</el-button>
+				</template>
+			</el-table-column>
+		</el-table>
+
+		<div slot="footer" class="dialog-footer">
+			<el-button @click="dialogLinkMenuList = false">取 消</el-button>
+			<el-button type="primary" @click="dialogLinkMenuList = false">确 定</el-button>
+		</div>
+	</el-dialog>
+</div>
+
+<script>
+
+var app = new Vue({
+el: '#app',
+data : {
+	roleData: [],
+	allMenuList:[],
+	roleManage:{
+	  roleName:'',
+	  useful:'',
+	  desc:'',
+	  roleMenu:'',
+	  pageNo:1,
+	  pageSize:10
+	},
+	totalNum:0,
+	usefulOptionsCopy: [{
+		value: '',
+		label: '全部'
+	},{
+		value: '1',
+		label: '是'
+	}, {
+		value: '0',
+		label: '否'
+	}],
+	usefulOptions: [{
+		value: '1',
+		label: '是'
+	}, {
+		value: '0',
+		label: '否'
+	}],
+	rules: {
+		roleName: [{
+			required: true,
+			message: '请输入角色名字',
+			trigger: 'blur'
+		}],
+		desc: [{
+			required: true,
+			message: '请输入角色描述',
+			trigger: 'blur'
+		}]
+	},
+	formLabelWidth: '90px',
+	roleAdd:false,
+	roleEdit1:false,
+	linkMenuDialog:false,
+	dialogLinkMenuList:false,
+	linkMenuFrom:{//关联菜单
+		roleId:'',
+		roleName:'',
+		linkMenu:[],
+		noLinkMenu:[]
+	},
+	menuForm:{
+		roleId:'',
+		searchName:''
+	},
+	roleAddFrom:{//添加角色
+		roleName:'',
+		desc:''
+	},
+	roleEditForm:{//编辑角色
+		id:'',
+		roleName:'',
+		desc:''
+	},
+		rowDate:null,
+		currentPage:1
+	},
+	created:function () {
+		this.searchForm();
+	},
+	methods: {
+		keyFormat(row, column){
+			var key=row[column.property];
+			if (key == undefined) {
+				return "";
+			}else if(key==0){
+				return "无效";
+			}else if(key==1){
+				return "有效";
+			}else {
+				return "未知";
+			}
+		},
+		svnTableData(){
+			var that = this;
+			$.ajax({
+				type:"get",
+				url:"/role/plist",
+				async:true,
+				dataType:"json",
+				success:function(res){
+					console.info(res)
+					that.roleData = res.data.list;
+				}
+
+			});
+		},
+		//添加用户角色
+		saverole(formName){
+            var that = this;
+            that.$refs[formName].validate((valid) => {
+                if (valid) {
+                    console.info(that.roleAddFrom)
+                    $.ajax({
+                        type:"put",
+                        url:"/role/add",
+                        async:true,
+						data:that.roleAddFrom,
+                        dataType:"json",
+                        success:function(res){
+                            if(res.success){
+                                that.searchForm();
+                                that.$message({
+                                    type: 'success',
+                                    message: '新增成功!'
+                                });
+                                that.resetForm();
+                            }else{
+                                that.$message({
+                                    type: 'error',
+                                    message: res.errorMsg
+                                });
+                            }
+                        }
+                    });
+
+                } else {
+            		return false;
+		        }
+		  	});
+		},
+
+		//行编辑
+		roleEdit(row){
+			var that = this;
+			that.roleEditForm.roleName=row.roleName;
+			that.roleEditForm.desc=row.desc;
+			that.roleEdit1 = true;
+		},
+		//提交修改
+		commitEdit(){
+			var that = this;
+			$.post("/role/update",that.roleEditForm,function(result){
+				if(result.success){
+					that.searchForm();
+                    that.$message({
+						type: 'success',
+						message: '修改成功!'
+					});
+                    that.roleEdit1 = false;
+					that.searchForm();
+				}else{
+                    that.$message({
+						type: 'error',
+						message: '修改失败!'
+					});
+				}
+			});
+		},
+		//删除行
+		deleteRow(id) {
+		    var that = this;
+            that.$confirm('是否确定删除该用户?', '提示', {
+			  confirmButtonText: '确定',
+			  cancelButtonText: '取消',
+			  type: 'warning'
+			}).then(() => {
+                $.ajax({
+                type:"delete",
+                url:"/role/delete/"+id,
+                async:true,
+                dataType:"json",
+                success:function(res){
+                    if(res.success){
+                        that.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        that.searchForm();
+					}else{
+                        that.$message({
+                            type: 'error',
+                            message: '删除失败!'
+                        });
+					}
+                }
+				});
+			}).catch(() => {
+			});
+	   },
+	   //搜索
+		searchForm(){
+			const that = this;
+			$.get("/role/plist",that.roleManage,function(result){
+				if(result.success){
+				    console.info(result)
+                    that.roleData = result.data.list;
+                    that.totalNum = result.data.total;
+				}
+			});
+		},
+        disablerole(id){
+            const that = this;
+            $.post("/role/disable/"+id,{},function(res){
+                if(res.success){
+                    that.$message({
+                        type: 'success',
+                        message: '禁用成功!'
+                    });
+                    that.searchForm();
+                }else{
+                    that.$message({
+                        type: 'error',
+                        message: '禁用失败!'
+                    });
+                }
+            });
+        },
+        startrole(id){
+            const that = this;
+            $.post("/role/start/"+id,{},function(res){
+                if(res.success){
+                    that.$message({
+                        type: 'success',
+                        message: '启用成功!'
+                    });
+                    that.searchForm();
+                }else{
+                    that.$message({
+                        type: 'error',
+                        message: '启用失败!'
+                    });
+                }
+            });
+        },
+		//添加角色
+		roleAddBtn(){
+			this.roleAdd = true;
+		},
+		//重置
+		resetForm() {
+            this.roleAddFrom.roleName='';
+            this.roleAddFrom.desc='';
+			this.roleAdd = false;
+		},
+		handleSizeChange(val) {
+			this.roleManage.pageSize = val;
+            this.searchForm();
+			console.log(`每页 ${val} 条`);
+		},
+		handleCurrentChange(val) {
+			this.roleManage.pageNo = val;
+            this.searchForm();
+			console.log(`当前页: ${val}`);
+		},
+		//重置
+		resetLinkForm() {
+			this.linkMenuFrom.roleName='';
+			this.linkMenuFrom.linkMemu='';
+			this.linkMenuFrom.linkMemuId='';
+			// 清空 关联 和 非关联菜单
+			this.linkMenuFrom.linkMenu=[];
+			this.linkMenuFrom.noLinkMenu=[];
+			this.linkMenuDialog = false;
+		},
+		linkMenu(row){
+			console.info("row id = "+row.id+", row = "+row+" row.roleMenu = "+row.roleMenu);
+			this.linkMenuFrom.roleId=row.id;
+			this.menuForm.roleId=row.id;
+			this.linkMenuFrom.roleName=row.roleName;
+			this.linkMenuFrom.linkMenu=row.linkMenu;
+			this.linkMenuDialog=true;
+		},
+		linkMenuSave(){
+			const  that=this;
+			// 保存关联数据 role/menu/add    roleId menuIds
+			var linkMenuIds="";
+			for(var i=0;i<this.linkMenuFrom.linkMenu.length;i++){
+				if(i==0){
+					linkMenuIds=this.linkMenuFrom.linkMenu[i].menuId;
+				}else{
+					linkMenuIds+=","+this.linkMenuFrom.linkMenu[i].menuId;
+				}
+			}
+			console.info("this.linkMenuFrom.roleId = "+this.linkMenuFrom.roleId+", linkMenuIds = "+linkMenuIds);
+			$.get("/role/menu/add?roleId="+this.linkMenuFrom.roleId+"&menuIds="+linkMenuIds,function(result){
+				if(result.success){
+					console.info(result)
+					that.linkMenuDialog=false;
+					that.resetLinkForm();
+					that.$message({
+						type: 'info',
+						message: '关联成功!'
+					});
+					that.svnTableData();
+				}else{
+					that.$message({
+						type: 'error',
+						message: '关联失败!'
+					});
+				}
+			});
+		},
+		searchMenu(){
+			const  that=this;
+			console.info("roleId ="+this.menuForm.roleId+"searchName="+this.menuForm.searchName);
+			// 搜索查询  菜单列表
+			$.get("/role/searcMenu",this.menuForm,function(result){
+				if(result.success){
+					console.info(result)
+					that.allMenuList = result.data;
+				}else{
+					that.$message({
+						type: 'error',
+						message: '查询失败!'
+					});
+				}
+			});
+		},
+		openMenuLinkRole(){
+			const that=this;
+			//请求 网络获取非 关联的菜单信息;
+			console.info("linkMenuFrom.roleId ="+this.linkMenuFrom.roleId);
+			$.get("/role/outMenu/"+this.linkMenuFrom.roleId,function(result){
+				if(result.success){
+					console.info(result)
+					that.allMenuList = result.data;
+					that.dialogLinkMenuList = true;
+				}else{
+					that.$message({
+						type: 'error',
+						message: '打开关联失败!'
+					});
+				}
+			});
+
+		},
+		addOn(){
+			var arr1 = this.linkMenuFrom.linkMenu;		//存在数组1
+			var arr2 = this.linkMenuFrom.noLinkMenu;	//添加数组2
+			console.info("this.linkMenuFrom.linkMenu = "+this.linkMenuFrom.linkMenu+"this.linkMenuFrom.noLinkMenu = "+this.linkMenuFrom.noLinkMenu);
+			var arrayConcat = arr2.concat(arr1);    //连接数组1+2
+			this.linkMenuFrom.linkMenu = arrayConcat;
+			this.linkMenuFrom.noLinkMenu = [];
+		},
+		saveRow(row,index,rows){
+			this.$confirm('即将添加菜单, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+				window.app.linkMenuFrom.noLinkMenu.push(row);
+				rows.splice(index, 1);
+			}).catch(() => {
+				this.$message({
+				type: 'info',
+				message: '已取消添加'
+				});
+			});
+		},
+		handleCloseDelPerson1(tag2){
+			this.linkMenuFrom.linkMenu.splice(this.linkMenuFrom.linkMenu.indexOf(tag2),1);
+			this.$message({
+				showClose: true,
+				message: '恭喜你，移除成功',
+				type: 'success'
+			});
+		},
+		handleCloseDelPerson2(tag3){
+			this.linkMenuFrom.noLinkMenu.splice(this.linkMenuFrom.noLinkMenu.indexOf(tag3),1);
+			this.$message({
+				showClose: true,
+				message: '恭喜你，移除成功',
+				type: 'success'
+			});
+		},
+	},
+
+});
+
+</script>
