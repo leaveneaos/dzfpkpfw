@@ -138,6 +138,20 @@ public class Invoice extends IdEntity implements Serializable {
      */
     private String orderId;
 
+    /**
+     * 
+     * 表 : tb_invoice
+     * 对应字段 : remark
+     */
+    private String remark;
+
+    /**
+     * 
+     * 表 : tb_invoice
+     * 对应字段 : fp_time
+     */
+    private Date fpTime;
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -480,5 +494,41 @@ public class Invoice extends IdEntity implements Serializable {
      */
     public void setOrderId(String orderId) {
         this.orderId = orderId == null ? null : orderId.trim();
+    }
+
+    /**
+     * get method 
+     *
+     * @return tb_invoice.remark：
+     */
+    public String getRemark() {
+        return remark;
+    }
+
+    /**
+     * set method 
+     *
+     * @param remark  
+     */
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    /**
+     * get method 
+     *
+     * @return tb_invoice.fp_time：
+     */
+    public Date getFpTime() {
+        return fpTime;
+    }
+
+    /**
+     * set method 
+     *
+     * @param fpTime  
+     */
+    public void setFpTime(Date fpTime) {
+        this.fpTime = fpTime;
     }
 }

@@ -19,6 +19,4 @@ public interface UserInfoService {
     PageInfo selectUserInfoByExample(UserInfo userInfo, Integer pageNo, Integer pageSize);
 
     List<UserInfo> selectAll();
-
-
 }

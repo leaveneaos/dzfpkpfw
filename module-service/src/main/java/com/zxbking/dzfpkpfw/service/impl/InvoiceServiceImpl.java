@@ -21,6 +21,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public boolean addInvoice(Invoice invoice) {
+        invoice.setStatus(1);
+        invoice.setCreateTime(new Date());
+        invoice.setDeleted(0);
         int flag = invoiceMapper.insertSelective(invoice);
         return flag==1;
     }
@@ -79,6 +82,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 				if("taxAbleAmount".equals(entry.getKey())){ criteria.andTaxAbleAmountEqualTo((java.lang.Long)entry.getValue()); continue; }
 				if("taxFreeAmount".equals(entry.getKey())){ criteria.andTaxFreeAmountEqualTo((java.lang.Long)entry.getValue()); continue; }
 				if("status".equals(entry.getKey())){ criteria.andStatusEqualTo((java.lang.Integer)entry.getValue()); continue; }
+				if("orderId".equals(entry.getKey())){ criteria.andOrderIdLike("%"+entry.getValue()+"%"); continue; }
+				if("remark".equals(entry.getKey())){ criteria.andRemarkLike("%"+entry.getValue()+"%"); continue; }
+				if("fpTime".equals(entry.getKey())){ criteria.andFpTimeEqualTo(new Date((Long)entry.getValue())); continue; }
 				
             }
         }

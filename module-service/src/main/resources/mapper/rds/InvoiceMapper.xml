@@ -24,6 +24,8 @@
     <result column="tax_free_amount" jdbcType="DECIMAL" property="taxFreeAmount" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="fp_time" jdbcType="TIMESTAMP" property="fpTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--
@@ -95,7 +97,7 @@
     -->
     id, type, name, phone, email, create_time, last_time, last_user, deleted, delete_time, 
     nsrsbh, gs_address, gs_phone, bank_name, bank_account_name, tax_able_amount, tax_free_amount, 
-    status, order_id
+    status, order_id, remark, fp_time
   </sql>
   <select id="selectByExample" parameterType="com.zxbking.dzfpkpfw.model.InvoiceExample" resultMap="BaseResultMap">
     <!--
@@ -160,14 +162,16 @@
       delete_time, nsrsbh, gs_address, 
       gs_phone, bank_name, bank_account_name, 
       tax_able_amount, tax_free_amount, status, 
-      order_id)
+      order_id, remark, fp_time
+      )
     values (#{id,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
       #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{lastTime,jdbcType=TIMESTAMP}, #{lastUser,jdbcType=VARCHAR}, #{deleted,jdbcType=INTEGER}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{nsrsbh,jdbcType=VARCHAR}, #{gsAddress,jdbcType=VARCHAR}, 
       #{gsPhone,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, #{bankAccountName,jdbcType=VARCHAR}, 
       #{taxAbleAmount,jdbcType=DECIMAL}, #{taxFreeAmount,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, 
-      #{orderId,jdbcType=VARCHAR})
+      #{orderId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{fpTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.zxbking.dzfpkpfw.model.Invoice">
     <!--
@@ -233,6 +237,12 @@
       <if test="orderId != null">
         order_id,
       </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="fpTime != null">
+        fp_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       #{id,jdbcType=VARCHAR},
@@ -289,6 +299,12 @@
       </if>
       <if test="orderId != null">
         #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="fpTime != null">
+        #{fpTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -364,6 +380,12 @@
       <if test="record.orderId != null">
         order_id = #{record.orderId,jdbcType=VARCHAR},
       </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fpTime != null">
+        fp_time = #{record.fpTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -392,7 +414,9 @@
       tax_able_amount = #{record.taxAbleAmount,jdbcType=DECIMAL},
       tax_free_amount = #{record.taxFreeAmount,jdbcType=DECIMAL},
       status = #{record.status,jdbcType=INTEGER},
-      order_id = #{record.orderId,jdbcType=VARCHAR}
+      order_id = #{record.orderId,jdbcType=VARCHAR},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      fp_time = #{record.fpTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -457,6 +481,12 @@
       <if test="orderId != null">
         order_id = #{orderId,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="fpTime != null">
+        fp_time = #{fpTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -482,7 +512,9 @@
       tax_able_amount = #{taxAbleAmount,jdbcType=DECIMAL},
       tax_free_amount = #{taxFreeAmount,jdbcType=DECIMAL},
       status = #{status,jdbcType=INTEGER},
-      order_id = #{orderId,jdbcType=VARCHAR}
+      order_id = #{orderId,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      fp_time = #{fpTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

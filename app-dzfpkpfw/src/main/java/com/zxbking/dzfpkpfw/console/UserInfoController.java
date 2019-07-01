@@ -14,8 +14,7 @@ import com.zxbking.dzfpkpfw.mapper.*;
 import com.zxbking.dzfpkpfw.model.*;
 import com.zxbking.dzfpkpfw.service.*;
 
-
-@Api(value = "用户信息表",description="用户信息表")
+@Api(value = "用户信息",description="用户信息")
 @RestController
 @RequestMapping("/rest/userinfo")
 public class UserInfoController extends AbstractRestController {

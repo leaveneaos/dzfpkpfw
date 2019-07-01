@@ -14,8 +14,7 @@ import com.zxbking.dzfpkpfw.mapper.*;
 import com.zxbking.dzfpkpfw.model.*;
 import com.zxbking.dzfpkpfw.service.*;
 
-
-@Api(value = "账号表",description="账号表")
+@Api(value = "账号信息",description="账号信息")
 @RestController
 @RequestMapping("/rest/account")
 public class AccountController extends AbstractRestController {

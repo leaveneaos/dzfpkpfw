@@ -14,8 +14,7 @@ import com.zxbking.dzfpkpfw.mapper.*;
 import com.zxbking.dzfpkpfw.model.*;
 import com.zxbking.dzfpkpfw.service.*;
 
-
-@Api(value = "发票信息表",description="发票信息表")
+@Api(value = "发票信息",description="发票信息")
 @RestController
 @RequestMapping("/rest/invoice")
 public class InvoiceController extends AbstractRestController {

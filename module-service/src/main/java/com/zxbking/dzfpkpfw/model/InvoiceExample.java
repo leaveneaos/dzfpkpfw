@@ -1410,6 +1410,136 @@ public class InvoiceExample {
             addCriterion("order_id not between", value1, value2, "orderId");
             return (Criteria) this;
         }
+
+        public Criteria andRemarkIsNull() {
+            addCriterion("remark is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkIsNotNull() {
+            addCriterion("remark is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkEqualTo(String value) {
+            addCriterion("remark =", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotEqualTo(String value) {
+            addCriterion("remark <>", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkGreaterThan(String value) {
+            addCriterion("remark >", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkGreaterThanOrEqualTo(String value) {
+            addCriterion("remark >=", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLessThan(String value) {
+            addCriterion("remark <", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLessThanOrEqualTo(String value) {
+            addCriterion("remark <=", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkLike(String value) {
+            addCriterion("remark like", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotLike(String value) {
+            addCriterion("remark not like", value, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkIn(List<String> values) {
+            addCriterion("remark in", values, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotIn(List<String> values) {
+            addCriterion("remark not in", values, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkBetween(String value1, String value2) {
+            addCriterion("remark between", value1, value2, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andRemarkNotBetween(String value1, String value2) {
+            addCriterion("remark not between", value1, value2, "remark");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeIsNull() {
+            addCriterion("fp_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeIsNotNull() {
+            addCriterion("fp_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeEqualTo(Date value) {
+            addCriterion("fp_time =", value, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeNotEqualTo(Date value) {
+            addCriterion("fp_time <>", value, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeGreaterThan(Date value) {
+            addCriterion("fp_time >", value, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("fp_time >=", value, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeLessThan(Date value) {
+            addCriterion("fp_time <", value, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeLessThanOrEqualTo(Date value) {
+            addCriterion("fp_time <=", value, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeIn(List<Date> values) {
+            addCriterion("fp_time in", values, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeNotIn(List<Date> values) {
+            addCriterion("fp_time not in", values, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeBetween(Date value1, Date value2) {
+            addCriterion("fp_time between", value1, value2, "fpTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andFpTimeNotBetween(Date value1, Date value2) {
+            addCriterion("fp_time not between", value1, value2, "fpTime");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

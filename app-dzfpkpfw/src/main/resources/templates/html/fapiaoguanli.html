@@ -3,42 +3,56 @@
 	<el-button type="primary" @click="userAddBtn">添加订单</el-button>
 	<el-button type="primary" icon="search" @click="searchForm">查询</el-button>
   	<el-form :model="userManage" :inline="true">
-		<el-form-item label="条件：" :label-width="formLabelWidth">
-	      <el-input   v-model="userManage.name"  placeholder="请选择姓名或账户"></el-input>
+		<el-form-item label="订单编号：" :label-width="formLabelWidth">
+	      <el-input   v-model="userManage.orderId"  placeholder="请选择订单编号"></el-input>
 	   </el-form-item>
-		<el-form-item label="性别：" :label-width="formLabelWidth">
-	      <el-select v-model="userManage.sex" placeholder="请选择">
-	      	<el-option v-for="item in sexOptionsCopy" :key="item.key" :label="item.label" :value="item.value"></el-option>
+		<el-form-item label="是否开票：" :label-width="formLabelWidth">
+	      <el-select v-model="userManage.status" placeholder="请选择">
+	      	<el-option v-for="item in statusList" :key="item.key" :label="item.label" :value="item.value"></el-option>
 	      </el-select>
 	   </el-form-item>
-		<el-form-item label="是否有效：" :label-width="formLabelWidth">
-			<el-select v-model="userManage.useful" placeholder="请选择">
-				<el-option v-for="item in usefulOptionsCopy" :key="item.key" :label="item.label" :value="item.value"></el-option>
-			</el-select>
-		</el-form-item>
+		<!--<el-form-item label="是否有效：" :label-width="formLabelWidth">-->
+			<!--<el-select v-model="userManage.useful" placeholder="请选择">-->
+				<!--<el-option v-for="item in usefulOptionsCopy" :key="item.key" :label="item.label" :value="item.value"></el-option>-->
+			<!--</el-select>-->
+		<!--</el-form-item>-->
     </el-form>
 	  
 	<el-table ref="multipleTable" :data="userData" border tooltip-effect="dark" align="center">
 		<!--<el-table-column align="center" type="selection" width="55">			
 		</el-table-column>-->
-		<el-table-column align="center" prop="userName" label="姓名"  >
+		<el-table-column align="center" prop="orderId" label="订单号"  >
 		</el-table-column>
-		<el-table-column align="center" prop="accountName" label="账户"  >
+		<el-table-column align="center" prop="taxAbleAmount" label="金额（含税）"  >
 		</el-table-column>
-		<el-table-column align="center" prop="passWord" label="密码" v-if="accountName=='superAdmin'" >
+		<el-table-column align="center" prop="taxFreeAmount" label="金额（不含税）"  >
 		</el-table-column>
-		<el-table-column align="center" prop="sex" label="性别" >
+		<el-table-column align="center" prop="lastTime" label="开票时间"  >
 		</el-table-column>
-		<el-table-column align="center" prop="useful" label="是否有效" :formatter="keyFormat">
+		<el-table-column align="center" prop="type" label="开票类型" :formatter="keyFormat2">
+		</el-table-column>
+		<el-table-column align="center" prop="name" label="发票名称" >
+		</el-table-column>
+		<el-table-column align="center" prop="phone" label="手机号码" >
+		</el-table-column>
+		<el-table-column align="center" prop="email" label="邮箱" >
+		</el-table-column>
+		<el-table-column align="center" prop="status" label="订单状态" :formatter="keyFormat">
+		</el-table-column>
+		<el-table-column align="center" prop="remark" label="备注" >
 		</el-table-column>
 		<el-table-column align="center" label="操作"  width="200" >
 			<template scope="scope">
-				<el-button type="text" size="small" v-if="scope.row.useful==1"
-						   @click.native.prevent="disableUser(scope.row.id)">禁用</el-button>
-				<el-button type="text" size="small" v-if="scope.row.useful==0"
-						   @click.native.prevent="startUser(scope.row.id)">启用</el-button>
-				<el-button type="text" size="small" @click.native.prevent="userEdit(scope.row)">编辑</el-button>
-				<el-button class="redfont" type="text" size="small" @click.native.prevent="deleteRow(scope.row.id)">删除</el-button>
+				<el-button type="text" size="small" v-if="scope.row.status==1"
+						   @click.native.prevent="disableUser(scope.row.id)">生成抬头二维码</el-button>
+				<el-button type="text" size="small" v-if="scope.row.status==2"
+						   @click.native.prevent="startUser(scope.row.id)">开具发票</el-button>
+
+				<el-button type="text" size="small" v-if="scope.row.status!=5"
+						   type="text" size="small" @click.native.prevent="userEdit(scope.row)">编辑</el-button>
+				<el-button type="text" size="small" @click.native.prevent="userOne(scope.row)">明细</el-button>
+				<el-button  type="text" size="small" v-if="scope.row.status!=5"
+							class="redfont" type="text" size="small" @click.native.prevent="deleteRow(scope.row.id)">删除</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -87,31 +101,48 @@
 	  </div>
     </el-dialog>
     
-    <el-dialog title="编辑用户" :visible.sync="userEdit1" >
+    <el-dialog title="编辑订单状态" :visible.sync="userEdit1" >
 	  <el-form v-model="userEditForm"  ref="userEditForm">
 	  	<el-row>
 	  		<el-col :span="16" :offset="4" >
-	  			<el-form-item label="姓名：" :label-width="formLabelWidth" prop="userName">
-			      <el-input v-model="userEditForm.userName" auto-complete="off"></el-input>
+	  			<el-form-item label="订单号：" :label-width="formLabelWidth" prop="orderId">
+			      <el-input v-model="userEditForm.orderId" auto-complete="off"></el-input>
 			    </el-form-item>
 	  		</el-col>
 	  		<el-col :span="16" :offset="4">
-	  			<el-form-item label="账户：" :label-width="formLabelWidth" prop="accountName">
-			      <el-input v-model="userEditForm.accountName"   auto-complete="off"></el-input>
+	  			<el-form-item label="含税金额：" :label-width="formLabelWidth" prop="taxAbleAmount">
+			      <el-input v-model="userEditForm.taxAbleAmount"   auto-complete="off"></el-input>
 			    </el-form-item>
 	  		</el-col>
 			<el-col :span="16" :offset="4">
-				<el-form-item label="密码：" :label-width="formLabelWidth" prop="passWord">
-					<el-input v-model="userEditForm.passWord"  type="password"  auto-complete="off"></el-input>
+				<el-form-item label="不含税金额：" :label-width="formLabelWidth" prop="taxFreeAmount">
+					<el-input v-model="userEditForm.taxFreeAmount"    auto-complete="off"></el-input>
+				</el-form-item>
+			</el-col>
+			<el-col :span="16" :offset="4">
+				<el-form-item label="开票时间：" :label-width="formLabelWidth" prop="kpTime">
+					<el-input v-model="userEditForm.kpTime"    auto-complete="off"></el-input>
 				</el-form-item>
 			</el-col>
 	  		<el-col :span="16" :offset="4">
-	  			<el-form-item label="性别：" :label-width="formLabelWidth" prop="sex">
-			      <el-select style="width: 100%;" v-model="userEditForm.sex" placeholder="请选择性别">
-			        <el-option v-for="item in sexOptions" :key="item.key" :label="item.label" :value="item.value"></el-option>
+	  			<el-form-item label="开票类型：" :label-width="formLabelWidth" prop="type">
+			      <el-select style="width: 100%;" v-model="userEditForm.type" placeholder="请选择开票类型">
+			        <el-option v-for="item in sexOptions2" :key="item.key" :label="item.label" :value="item.value"></el-option>
 			      </el-select>
 			    </el-form-item>
 	  		</el-col>
+			<el-col :span="16" :offset="4">
+				<el-form-item label="订单状态：" :label-width="formLabelWidth" prop="status">
+					<el-select style="width: 100%;" v-model="userEditForm.status" placeholder="请选择订单状态">
+						<el-option v-for="item in sexOptions" :key="item.key" :label="item.label" :value="item.value"></el-option>
+					</el-select>
+				</el-form-item>
+			</el-col>
+			<el-col :span="16" :offset="4">
+				<el-form-item label="备注：" :label-width="formLabelWidth" prop="remark">
+					<el-input v-model="userEditForm.remark"    auto-complete="off"></el-input>
+				</el-form-item>
+			</el-col>
 	  	</el-row>
 	  </el-form>
 	  <div slot="footer" class="dialog-footer">
@@ -120,6 +151,81 @@
 	  </div>
     </el-dialog>
 
+	<el-dialog title="查看订单详情" :visible.sync="userOne1" >
+		<el-form v-model="userEditForm"  ref="userEditForm">
+			<el-row>
+				<el-col :span="16" :offset="4" >
+					<el-form-item label="订单号：" :label-width="formLabelWidth" prop="orderId">
+						<el-input v-model="userEditForm.orderId" auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="含税金额：" :label-width="formLabelWidth" prop="taxAbleAmount">
+						<el-input v-model="userEditForm.taxAbleAmount"   auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="不含税金额：" :label-width="formLabelWidth" prop="taxFreeAmount">
+						<el-input v-model="userEditForm.taxFreeAmount"    auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="开票时间：" :label-width="formLabelWidth" prop="fpTime">
+						<el-input v-model="userEditForm.fpTime"    auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="开票类型：" :label-width="formLabelWidth" prop="type">
+						<el-select style="width: 100%;" v-model="userEditForm.type" placeholder="请选择开票类型">
+							<el-option v-for="item in sexOptions2" :key="item.key" :label="item.label" :value="item.value"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="订单状态：" :label-width="formLabelWidth" prop="status">
+						<el-select style="width: 100%;" v-model="userEditForm.status" placeholder="请选择订单状态">
+							<el-option v-for="item in sexOptions" :key="item.key" :label="item.label" :value="item.value"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+
+				<el-col :span="16" :offset="4">
+					<el-form-item label="税号：" :label-width="formLabelWidth" prop="nsrsbh">
+						<el-input v-model="userEditForm.nsrsbh"    auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="公司地址：" :label-width="formLabelWidth" prop="gsAddress">
+						<el-input v-model="userEditForm.gsAddress"    auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="公司电话：" :label-width="formLabelWidth" prop="gsPhone">
+						<el-input v-model="userEditForm.gsPhone"    auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="开户银行：" :label-width="formLabelWidth" prop="bankName">
+						<el-input v-model="userEditForm.bankName"    auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="银行账号：" :label-width="formLabelWidth" prop="bankAccountName">
+						<el-input v-model="userEditForm.kpTime"    auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="16" :offset="4">
+					<el-form-item label="备注：" :label-width="formLabelWidth" prop="remark">
+						<el-input v-model="userEditForm.remark"    auto-complete="off"></el-input>
+					</el-form-item>
+				</el-col>
+			</el-row>
+		</el-form>
+		<div slot="footer" class="dialog-footer">
+			<el-button @click="userOne1 = false">取 消</el-button>
+			<!--<el-button type="primary" @click="commitEdit">确 定</el-button>-->
+		</div>
+	</el-dialog>
 </div>
 
 <script>
@@ -129,31 +235,60 @@ el: '#app',
 data : {
 	userData: [],
 	userManage:{
-	  name:'',
-	  useful:'',
-	  sex:'',
+	  orderId:'',
+	  status:'',
 	  pageNo:1,
 	  pageSize:10
 	},
 	totalNum:0,
-	sexOptionsCopy: [{
+	statusList: [{
 		value: '',
 		label: '全部'
 	},{
-		value: '男',
-		label: '男'
+		value: '1',
+		label: '待填写开票信息'
 	}, {
-		value: '女',
-		label: '女'
+		value: '2',
+		label: '待开具电子发票'
+	}, {
+		value: '3',
+		label: '开具成功'
+	}, {
+		value: '4',
+		label: '开具失败'
+	}, {
+		value: '5',
+		label: '失误订单'
+	}],
+	sexOptions2: [{
+		value: '0',
+		label: '企业开发',
+		key: '0'
+	}, {
+		value: '1',
+		label: '个人开票',
+		key: '1'
 	}],
 	sexOptions: [{
-		value: '男',
-		label: '男',
-		key: '001'
+		value: '1',
+		label: '待填写开票信息',
+		key: '待填写开票信息'
 	}, {
-		value: '女',
-		label: '女',
-		key: '002'
+		value: '2',
+		label: '待开具电子发票',
+		key: '待开具电子发票'
+	}, {
+		value: '3',
+		label: '开具成功',
+		key: '开具成功'
+	}, {
+		value: '4',
+		label: '开具失败',
+		key: '开具失败'
+	}, {
+		value: '5',
+		label: '失误订单',
+		key: '失误订单'
 	}],
 	usefulOptionsCopy: [{
 		value: '',
@@ -192,6 +327,7 @@ data : {
 	formLabelWidth: '110px',
 	userAdd:false,
 	userEdit1:false,
+	userOne1:false,
 	userAddFrom:{//添加用户
 		orderId:'',
 		taxFreeAmount:'0',
@@ -202,7 +338,7 @@ data : {
 		userName:'',
 		accountName:'',
 		passWord:"",
-		sex:''
+		status:''
 	},
 	rowDate:null,
 	currentPage:1,
@@ -213,16 +349,34 @@ data : {
 		this.searchForm();
 	},
 	methods: {
+		keyFormat2(row, column){
+			var key=row[column.property];
+			if (key == undefined) {
+				return "";
+			}else if(key==1){
+				return "企业";
+			}else if(key==2){
+				return "个人";
+			}else {
+				return "失误订单";
+			}
+		},
 		keyFormat(row, column){
 			var key=row[column.property];
 			if (key == undefined) {
 				return "";
-			}else if(key==0){
-				return "无效";
 			}else if(key==1){
-				return "有效";
+				return "待填写开票信息";
+			}else if(key==2){
+				return "待开具电子发票";
+			}else if(key==3){
+				return "开具成功";
+			}else if(key==4){
+				return "开具失败";
+			}else if(key==5){
+				return "开具失败";
 			}else {
-				return "未知";
+				return "失误订单";
 			}
 		},
 		svnTableData(){
@@ -249,7 +403,9 @@ data : {
                         type:"put",
                         url:"/rest/invoice",
                         async:true,
-						data:that.userAddFrom,
+						data: JSON.stringify(that.userAddFrom),
+						//  数据类型必须为application/x-www-form-urlencoded之外的类型
+						contentType:"application/json;charset=UTF-8",
                         dataType:"json",
                         success:function(res){
                             if(res.success){
@@ -273,14 +429,28 @@ data : {
 		        }
 		  	});
 		},
-
+		userOne(row){
+			var that = this;
+			var id = row.id;
+			$.ajax({
+				type:"get",
+				url:"/rest/invoice/"+id,
+				async:true,
+				dataType:"json",
+				success:function(res){
+					console.info(res)
+					that.userEditForm = res.data;
+					that.userOne1 = true;
+				}
+			});
+		},
 		//行编辑
 		userEdit(row){
 			var that = this;
 			var id = row.id;
 			$.ajax({
 				type:"get",
-				url:"/rest/user/"+id,
+				url:"/rest/invoice/"+id,
 				async:true,
 				dataType:"json",
 				success:function(res){
@@ -293,22 +463,33 @@ data : {
 		//提交修改
 		commitEdit(){
 			var that = this;
-            that.userEditForm.createTime = new Date();
-			$.post("/rest/user/update",that.userEditForm,function(result){
-				if(result.success){
-					that.searchForm();
-                    that.$message({
-						type: 'success',
-						message: '修改成功!'
-					});
-                    that.userEdit1 = false;
-				}else{
-                    that.$message({
-						type: 'error',
-						message: '修改失败!'
-					});
+            that.userEditForm.lastTime = new Date();
+			console.log( that.userEditForm)
+			$.ajax({
+				type: "post",
+				url: "/rest/invoice",
+				async: true,
+				data: JSON.stringify(that.userEditForm),
+				//  数据类型必须为application/x-www-form-urlencoded之外的类型
+				contentType: "application/json;charset=UTF-8",
+				dataType: "json",
+				success: function (res) {
+					if(res.success){
+						that.searchForm();
+						that.$message({
+							type: 'success',
+							message: '修改成功!'
+						});
+						that.userEdit1 = false;
+					}else{
+						that.$message({
+							type: 'error',
+							message: '修改失败!'
+						});
+					}
 				}
-			});
+			})
+
 		},
 		//删除行
 		deleteRow(id) {
@@ -318,33 +499,41 @@ data : {
 			  cancelButtonText: '取消',
 			  type: 'warning'
 			}).then(() => {
-                $.ajax({
-                type:"delete",
-                url:"/rest/user/delete/"+id,
-                async:true,
-                dataType:"json",
-                success:function(res){
-                    if(res.success){
-                        that.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-                        that.searchForm();
-					}else{
-                        that.$message({
-                            type: 'error',
-                            message: '删除失败!'
-                        });
+
+				var delDate = {"id":id,"deleted":1,"delete_time":new Date()};
+			$.ajax({
+				type: "post",
+				url: "/rest/invoice",
+				async: true,
+				data: JSON.stringify(delDate),
+				//  数据类型必须为application/x-www-form-urlencoded之外的类型
+				contentType: "application/json;charset=UTF-8",
+				dataType: "json",
+				success: function (res) {
+					if (res.success) {
+						that.searchForm();
+						that.$message({
+							type: 'success',
+							message: '删除成功!'
+						});
+						that.userEdit1 = false;
+					} else {
+						that.$message({
+							type: 'error',
+							message: '删除失败!'
+						});
 					}
-                }
-				});
+				}
+			});
+
 			}).catch(() => {
 			});
 	   },
 	   //搜索
 		searchForm(){
 			const that = this;
-			$.get("/rest/user/plist",that.userManage,function(result){
+				that.userManage.deleted=0;
+			$.get("/rest/invoice/plist",that.userManage,function(result){
 				if(result.success){
 				    console.info(result)
                     that.userData = result.data.list;
@@ -392,10 +581,9 @@ data : {
 		},
 		//重置
 		resetForm() {
-            this.userAddFrom.userName='';
-            this.userAddFrom.accountName='';
-            this.userAddFrom.sex='';
-			this.userAddFrom.passWord='';
+            this.userAddFrom.orderId='';
+            this.userAddFrom.taxFreeAmount='0';
+            this.userAddFrom.taxAbleAmount='0';
 			this.userAdd = false;
 		},
 		handleSizeChange(val) {
