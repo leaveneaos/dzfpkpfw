@@ -5,7 +5,7 @@
 	}
 	var $containerHeight = $(".container").height();
 	$(".c_section").height($containerHeight - 50 + "px");
-	$(".d_rightBox").load("html/fapiaoguanli.html");
+	$(".d_rightBox").load("html/fptqeem.html");
 	//加载用户信息
     userData();
 	//加载用户菜单权限

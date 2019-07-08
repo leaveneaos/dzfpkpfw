@@ -54,7 +54,11 @@ function usermenuData(){
 	// 	dataType:"json",
 	// 	success:function(res){
 	var res1 = "[{\"sortno\":1517160084073,\"path\":\"./html/userxinxi.html\",\"name\":\"用户信息\",\"id\":\"6319479984e02683c3cb7897ce0629ec\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"用户信息\"},{\"sortno\":1517160152914,\"path\":\"./html/userguanli.html\",\"name\":\"用户管理\",\"id\":\"a9c802f71677a237c4cd7049d7246589\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"用户管理\"},{\"sortno\":1517160177336,\"path\":\"./html/svnguanli.html\",\"name\":\"SVN管理\",\"id\":\"cbf742b3b75dbc99d56597d823efa06c\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"SVN管理\"},{\"sortno\":1517160198187,\"path\":\"./html/group.html\",\"name\":\"组别\",\"id\":\"e473df447a593bf5b87db330d35ea052\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"组别\"},{\"sortno\":1517160239228,\"path\":\"./html/platform.html\",\"name\":\"平台菜单权限\",\"id\":\"3589a640e9f3403ddaaa124713e2a685\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"平台菜单权限\"},{\"sortno\":1517160267089,\"path\":\"./html/roleguanli.html\",\"name\":\"角色管理\",\"id\":\"3297b8954cd9dc94e3d3f6f1ac1ad42b\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"角色管理\"},{\"sortno\":1517160304038,\"path\":\"./html/menuguanli.html\",\"name\":\"菜单管理\",\"id\":\"fc52fc29d48ffe9c3e371c0a59ba2928\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"菜单管理\"}]";
-	var res1 ="[{\"sortno\":1517160152914,\"path\":\"./html/fapiaoguanli.html\",\"name\":\"发票信息管理\",\"id\":\"a9c802f71677a237c4cd7049d7246589\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"发票信息管理\"},{\"sortno\":1517160084073,\"path\":\"./html/userxinxi.html\",\"name\":\"用户信息\",\"id\":\"6319479984e02683c3cb7897ce0629ec\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"用户信息\"}]";
+	var res1 ="[" +
+		"{\"sortno\":1517160152914,\"path\":\"./html/fptqeem.html\",\"name\":\"发票提取二维码打印\",\"id\":\"a9c802f71677a237c4cd7049d7246589\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"发票提取二维码打印\"}," +
+		"{\"sortno\":1517160152914,\"path\":\"./html/fapiaoguanli.html\",\"name\":\"发票信息管理\",\"id\":\"a9c802f71677a237c4cd7049d7246589\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"发票信息管理\"}" +
+		// ", {\"sortno\":1517160084073,\"path\":\"./html/userxinxi.html\",\"name\":\"用户信息\",\"id\":\"6319479984e02683c3cb7897ce0629ec\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"用户信息\"}" +
+		"]";
 
 	// console.info(res,"res.data： "+res.data)
 			// $(".c_userName").text(res.data.userName);
@@ -70,7 +74,7 @@ function usermenuData(){
 			$(".menuLi").bind("click",function(){
 				var url=$(this).attr("data");
 				$(".d_rightBox").load(url);
-				if(url=="./html/userxinxi.html"){
+				if(url=="./html/fptqeem.html"){
 					userData();
 				}
 			});

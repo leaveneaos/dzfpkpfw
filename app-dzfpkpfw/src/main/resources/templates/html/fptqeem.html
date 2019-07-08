@@ -1,0 +1,103 @@
+<div class="kjfp" style="
+
+">
+    <span class="je">金额</span>
+    <input type="text"  class="jes" value="0.00" id="jes"
+
+           onkeyup="jesf(this,event)"
+    >
+    <button class="jebutton" onclick="kfewm()" >打印开票二位码</button>
+</div>
+<style>
+    div.kjfp{
+        width: 300px;
+    }
+    span.je{
+        font-size: 50px;
+        display: block;
+        width: 200px;
+        float:left;
+        text-align:right;
+    }
+    input.jes{
+        height: 170px;
+        font-size: 75px;
+        width: 300px;
+        text-align:right;
+        margin: 10px 0px 10px 0px;
+    }
+    button.jebutton{
+        width: 300px;
+        height: 170px;
+        font-size: 61px;
+        background: #6FBBF4;
+        color: #ffffff;
+        border: none;
+    }
+</style>
+<script>
+    function jesf(obj,e) {
+        //获取键盘输入的keyCode
+        var keycode = (Number)(e.keyCode);
+        console.log(keycode)
+//        //得到第一个字符是否为负号    
+//        var t = obj.value.charAt(0);
+//        //先把非数字的都替换掉，除了数字和.和-号    
+//        obj.value = obj.value.replace(/[^\d\.\-]/g,'');
+//        //前两位不能是0加数字      
+//        obj.value = obj.value.replace(/^0\d[0-9]*/g,'');
+//        //必须保证第一个为数字而不是.       
+//        obj.value = obj.value.replace(/^\./g,'');
+////        obj.value = obj.value+=".00"
+//        //保证只有出现一个.而没有多个.       
+//        obj.value = obj.value.replace(/\.{2,}/g,'.');
+//        //保证.只出现一次，而不能出现两次以上       
+//        obj.value = obj.value.replace('.','$#$').replace(/\./g,'').replace('$#$','.');
+//        //如果第一位是负号，则允许添加    
+//        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');
+//
+////        obj.value =  obj.value.match(/\d+(\.\d{0,2})?/) ? obj.value.match(/\d+(\.\d{0,2})?/)[0] : ''
+//        if(t == '-'){ return; }
+//        //键盘上方数字键
+//        if(keycode >= 48 && keycode <= 57){
+//            e.returnValue = true;
+//            //小数字键盘
+//        }else if(keycode >=96 && keycode <= 105){
+//            e.returnValue = true;
+//            //删除键和delete
+//        }else if(keycode == 8 || keycode == 46){
+//            e.returnValue = true;
+//            //除此之外，其他的不允许输入
+//        }else{
+//            e.returnValue = false;
+//        }
+//        console.log($("#jes").val())
+    }
+    function kfewm() {
+        window.open("/ewm?amount="+$("#jes").val())
+//        $.ajax({
+//            type:"put",
+//            url:"/rest/invoice",
+//            async:true,
+//            data: JSON.stringify(userAddFrom),
+//            //  数据类型必须为application/x-www-form-urlencoded之外的类型
+//            contentType:"application/json;charset=UTF-8",
+//            dataType:"json",
+//            success:function(res){
+//                if(res.success){
+//                    that.$message({
+//                        type: 'success',
+//                        message: '开始开票二维码打印!'
+//                    });
+//                    window.open("/ewm/"+res.data.id)
+//                }else{
+//                    that.$message({
+//                        type: 'error',
+//                        message: res.errorMsg
+//                    });
+//                }
+//            }
+//        });
+
+    }
+</script>
