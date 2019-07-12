@@ -79,9 +79,9 @@ public class RouterController extends AbstractRestController {
 
             BigDecimal invoiceHsBigDecimal = new BigDecimal(invoiceHs);
             invoiceHsBigDecimal = invoiceHsBigDecimal.setScale(len, BigDecimal.ROUND_HALF_DOWN);
-            invoiceHsBigDecimal = (new BigDecimal(1)).subtract(invoiceHsBigDecimal);
-            decimal = decimal.multiply(invoiceHsBigDecimal);
-//            decimal = decimal.divide(invoiceHsBigDecimal, len, BigDecimal.ROUND_HALF_DOWN);
+//            invoiceHsBigDecimal = (new BigDecimal(1)).subtract(invoiceHsBigDecimal);
+//            decimal = decimal.multiply(invoiceHsBigDecimal);
+            decimal = decimal.divide(invoiceHsBigDecimal, len, BigDecimal.ROUND_HALF_DOWN);
             invoice.setTaxFreeAmount(decimal.longValue());
             Boolean flag = invoiceService.addInvoice(invoice);
             if (!flag) {
@@ -93,15 +93,16 @@ public class RouterController extends AbstractRestController {
             model.addAttribute("invoice", invoice);
             model.addAttribute("qymc", qymc);
             model.addAttribute("qyphone", qyphone);
-            model.addAttribute("createTime", DateUtils.format(invoice.getCreateTime(),"yyyy年MM月dd日"));
+            model.addAttribute("createTime", DateUtils.format(invoice.getCreateTime(), "yyyy年MM月dd日 hh:mm:ss"));
             BigDecimal bigDecimal = new BigDecimal(invoice.getTaxAbleAmount());
             bigDecimal = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_DOWN);
-            model.addAttribute("amount",bigDecimal.toString() );
+            model.addAttribute("amount", bigDecimal.toString());
         } else {
             model.addAttribute("success", false);
         }
         return "html/ewm";
     }
+
     @Value("${server.port}")
     String port;
     @Value("${ip.addr}")
@@ -109,10 +110,10 @@ public class RouterController extends AbstractRestController {
 
     @RequestMapping(value = "/qrcode/generateqrcode/{orderId}", method = RequestMethod.GET)
     @ResponseBody
-    public void generateQRCode4Product(HttpServletRequest request,@PathVariable String orderId, HttpServletResponse response) {
+    public void generateQRCode4Product(HttpServletRequest request, @PathVariable String orderId, HttpServletResponse response) {
         String longUrl;
         try {
-            longUrl = "https://"+ipAddr+":"+port+"/invoice/"+orderId;
+            longUrl = "https://" + ipAddr + ":" + port + "/invoice/" + orderId;
             // 转换成短url
 //            String shortUrl = ShortNetAddressUtil.generateShortUrl(longUrl);
             // 生成二维码
@@ -127,14 +128,18 @@ public class RouterController extends AbstractRestController {
     @RequestMapping(value = "/invoice/{orderId}", method = RequestMethod.GET)
     public String sayHelloForm(@PathVariable String orderId, Model model) {
         Invoice invoice = invoiceService.findById(orderId);
-        if (invoice != null) {
-            model.addAttribute("success", true);
-            model.addAttribute("invoice", invoice);
-            model.addAttribute("qymc", qymc);
-            model.addAttribute("qyphone", qyphone);
-        } else {
-            model.addAttribute("success", false);
+        if(invoice.getStatus()==1||invoice.getStatus()==2){
+            if (invoice != null) {
+                model.addAttribute("success", true);
+                model.addAttribute("invoice", invoice);
+                model.addAttribute("qymc", qymc);
+                model.addAttribute("qyphone", qyphone);
+            } else {
+                model.addAttribute("success", false);
+            }
+            return "html/invoice";
+        }else{
+            return "html/invoice-s";
         }
-        return "html/invoice";
     }
 }

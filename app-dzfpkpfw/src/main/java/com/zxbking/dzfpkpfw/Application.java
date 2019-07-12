@@ -2,6 +2,7 @@ package com.zxbking.dzfpkpfw;
 
 import com.ihyht.alyxjs.nbjcpt.component.dao.mybatis.DaoMybatisConfig;
 import com.ihyht.alyxjs.nbjcpt.component.swagger.SwaggerConfig;
+import com.ihyht.alyxjs.wfw.component.cache.redis.FrameworkCacheConfig;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Import;
         SwaggerConfig.class
         ,DaoMybatisConfig.class
         ,DaoServiceConfig.class
+        ,FrameworkCacheConfig.class
 })
 public class Application {
 

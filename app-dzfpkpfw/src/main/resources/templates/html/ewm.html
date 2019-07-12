@@ -5,28 +5,44 @@
     <title>Insert title here</title>
     <style>
         body{ text-align:center}
-        .div{ margin:0 0 0 0; width:240px;
-            height:580px;
-            /*border:1px solid #F00*/
+        .div{ margin:0 0 0 0;
+            /*width:240px;*/
+            /*height:580px;*/
+            /*border:1px solid #F00;*/
+            width: 210px;
+            height: 360px;
         }
         img{
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
+        }
+        p{
+            margin: 0;
+            /*line-height: 0px;*/
+        }
+        .bt{
+            display: block;
+            font-size: 2em;
+            /*margin-block-start: 0.67em;*/
+            /*margin-block-end: 0.67em;*/
+            /*color: #C0C0C0;*/
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            /*font-weight: bold;*/
         }
     </style>
 </head>
 <body>
 <!--startprint1-->
 <div class="div">
-    <h1>发票提取二维码打印</h1>
-    <p align="left" ><span>申请时间：</span><span th:text="${createTime}"></span></p>
-    <p align="left"><span>商户名称：</span><span th:text="${qymc}"></span></p>
+    <p class="bt">发票提取码</p>
+    <p align="left"><span th:text="${qymc}"></span></p>
+    <p align="left" ><span th:text="${createTime}"></span></p>
     <p align="left"><span>金额（元）：</span><span th:text="${amount}"></span></p>
     <p><img alt="二维码"  th:src="@{/qrcode/generateqrcode/{orderId}(orderId=${invoice.id})}"></p>
-    <p>二维码有效期为7天。</p>
-    <p>申请提交后，发票将于24小时内发送到您的邮箱。</p>
-    <p><span>技术支持：</span><span th:text="${qyphone}"></span></p>
-
+    <p  align="left">1.二维码有效期为7天。</p>
+    <p align="left">2.申请提交后，发票将于24小时内发到您的邮箱或手机。</p>
+    <p align="left"><span>3.技术支持：</span><span th:text="${qyphone}"></span></p>
 </div>
 <!--endprint1-->
 

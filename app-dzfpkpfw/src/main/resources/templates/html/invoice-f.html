@@ -267,172 +267,30 @@
 		</style>
 	</head>
 	<body>
-		<div class="contenter">
-			<div class="invoice_form">
-				<div class="invoice_cell_title">
-					如开具增值税专用发票，需要全部填写
-				</div>
-				<div class="invoice_cells">
-					<div class="invoice_cell invoice_cell_radio">
-						<label class="invoice_cell_hd  invoice_cell_radio" for="radio_1">
-							<div class=" invoice_cell">
-								<div class="invoice_cell_hd">
-									<input type="radio" class="invoice_cell_check" name="radio" id="radio_1" checked="checked" value="1">
-									<div class="invoice_icon_checked">
-
-									</div>
-								</div>
-								<div class="invoice_cell_bd">
-									<p>企业</p>
-								</div>
+	<div class="contenter">
+		<div class="invoice_form">
+			<div class="invoice_cell_title">
+				发票申请失败
+			</div>
+			<div class="invoice_cells">
+				<div class="invoice_cell invoice_cell_radio">
+					<label class="invoice_cell_bd  invoice_cell_radio" >
+						<div class=" invoice_cell">
+							<div class="invoice_cell_bd">
+								<p>你的申请提交失败，请重新扫描填写开票信息。</p>
 							</div>
-						</label>
-						<label class="invoice_cell_bd  invoice_cell_radio" for="radio_2">
-							<div class=" invoice_cell">
-								<div class="invoice_cell_hd">
-									<input type="radio" class="invoice_cell_check" name="radio" id="radio_2" value="2">
-									<div class="invoice_icon_checked">
-									</div>
-								</div>
-								<div class="invoice_cell_bd">
-									<p>个人及事业单位</p>
-								</div>
-							</div>
-						</label>
-					</div>
-				</div>
-				<div class="invoice_cells">
-					<div class="invoice_cell">
-						<div class="invoice_cell_bd"><label class="invoice_cell_label invoice_cell_label_simbol">名称</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入关键词" id="name"></div>
-						<!--支持模糊匹配-->
-					</div>
-				</div>
-				<div class="invoice_cells" id="difcell">
-					<div class="invoice_cell click_hidden">
-						<div class="invoice_cell_bd"><label class="invoice_cell_label invoice_cell_label_simbol">税号</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入纳税人识别号(必填)" id="nsrsbh"
-															oninput="if(value.length>18)value=value.slice(0,18)"
-						></div>
-					</div>
-					<!--<div class="invoice_cell">-->
-						<!--<div class="invoice_cell_bd"><label class="invoice_cell_label">默认抬头</label></div>-->
-						<!--<div class="invoice_cell_ft">-->
-							<!--<label for="switchCP" class="invoice_switch-cp">-->
-								<!--<input id="switchCP" class="invoice_switch_cp_input" type="checkbox" checked="checked">-->
-								<!--<div class="invoice_switch_cp_box"></div>-->
-							<!--</label>-->
-						<!--</div>-->
-					<!--</div>-->
-					<div class="invoice_cell invoice_cell_border click_hidden">
-						<div class="invoice_cell_bd"><label class="invoice_cell_label">公司地址</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入公司地址" id="gsAddress"></div>
-					</div>
-					<div class="invoice_cell invoice_cell_border click_hidden">
-						<div class="invoice_cell_bd"><label class="invoice_cell_label">电话号码</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入公司电话号码" id="gsPhone"></div>
-					</div>
-					<div class="invoice_cell invoice_cell_border click_hidden">
-						<div class="invoice_cell_bd"><label class="invoice_cell_label">开户银行</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入开户银行" id="bankName"></div>
-					</div>
-					<div class="invoice_cell invoice_cell_border click_hidden">
-						<div class="invoice_cell_bd"><label class="invoice_cell_label">银行账号</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入银行账号" id="bankAccountName"></div>
-					</div>
-				</div>
-				<div class="invoice_cells">
-					<div class="invoice_cell_title">
-						填写联系方式，向您同步电子发票信息
-					</div>
-					<div class="invoice_cell">
-						<div class="invoice_cell_bd"><label class="invoice_cell_label">手机号</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" pattern="[0-9]*" placeholder="请输入个人手机号" id="phone"></div>
-					</div>
-					<div class="invoice_cell">
-						<div class="invoice_cell_bd"><label class="invoice_cell_label">邮箱</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入个人邮箱" id="email"></div>
-					</div>
-				</div>
-				<div class="invoice_button">
-					<a class="invoice_btn" href="javascript:save()">保存</a>
+						</div>
+					</label>
 				</div>
 			</div>
+			<div class="invoice_button">
+				<a class="invoice_btn" href="javascript:window.close()">请关闭当前页</a>
+			</div>
 		</div>
-		<input th:value="${invoice.id}" id="id" hidden>
-		<!--<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>-->
-		<!--&lt;!&ndash;<script src="../assets/jquery-1.12.0.js" type="text/javascript" charset="utf-8"></script>&ndash;&gt;-->
-		<!--<script src="https://jqweui.com/dist/js/jquery-weui.js"></script>-->
-
-		<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
-		<script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
+	</div>
 	<script>
-		var type = 1;
-		$("#radio_1").click(function(){
-			type = $("input[type=radio]:checked").val();
-			$(".click_hidden").show();
-		});
-		$("#radio_2").click(function(){
-			type = $("input[type=radio]:checked").val();
-			$(".click_hidden").hide();
-		});
-		function save() {
-			var that = this;
-			var tmp_name = $("#name").val();
-			if(!tmp_name || tmp_name.trim().length<=0){
-				$.toast("发票名称必填", "cancel");
-				return ;
-			}
-			var tmp_nsrsbh = $("#nsrsbh").val();
-			if(!tmp_nsrsbh || tmp_nsrsbh.trim().length!=18){
-				$.toast("纳税人识别号必须为18位", "cancel");
-				return ;
-			}
-			var tmp_phone = $("#phone").val();
-			var tmp_email =  $("#email").val();
-			if((tmp_phone && tmp_phone.trim().length==11)||(tmp_email && tmp_email.trim().length>0)){
-			}else{
-				if(tmp_phone && tmp_phone.trim().length!=11){
-					$.toast("手机号码必须是11位", "cancel");
-					return ;
-				}else{
-					$.toast("手机号码或者邮箱必须最少填一个", "cancel");
-					return ;
-				}
-			}
-			var data={
-				bankAccountName: $("#bankAccountName").val(),
-				bankName: $("#bankName").val(),
-				email: $("#email").val(),
-				gsAddress: $("#gsAddress").val(),
-				gsPhone: $("#gsPhone").val(),
-				id: $("#id").val(),
-				name: $("#name").val(),
-				nsrsbh: $("#nsrsbh").val(),
-//				orderId: "1111111111111"
-				phone: $("#phone").val(),
-				status: 2,
-				type:new Number(type)
-			}
-			$.ajax({
-				type: "post",
-				url: "/rest/invoice",
-				async: true,
-				data: JSON.stringify(data),
-				//  数据类型必须为application/x-www-form-urlencoded之外的类型
-				contentType: "application/json;charset=UTF-8",
-				dataType: "json",
-				success: function (res) {
-					if(res.success){
-						window.location.href="/html/invoice-s.html";
-					}else{
-						window.location.href="/html/invoice-f.html";
-					}
-				}
-			})
-		}
-	</script>
 
+	</script>
 	</body>
 </html>
 

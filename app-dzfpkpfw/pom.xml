@@ -87,6 +87,11 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.ihyht.alyxjs.wfw</groupId>
+            <artifactId>component-cache-redis</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

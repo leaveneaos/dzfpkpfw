@@ -6,6 +6,7 @@ import com.ihyht.commons.lang.model.RestResponse;
 import com.zxbking.dzfpkpfw.base.AbstractRestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.tools.ant.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -70,7 +71,8 @@ public class InvoiceController extends AbstractRestController {
     @RequestMapping(path="/plist",method = RequestMethod.GET)
     @ApiOperation(value = "分页带条件查询")
     public RestResponse selectCeShiByExample(@ModelAttribute Invoice invoice, @RequestParam(defaultValue = "1") Integer pageNo, @RequestParam(defaultValue = "20") Integer pageSize){
-        PageInfo p = invoiceService.selectInvoiceByExample(invoice,pageNo,pageSize);
+        PageInfo<Invoice> p = invoiceService.selectInvoiceByExample(invoice,pageNo,pageSize);
+//        p.getList().stream().forEach(obj -> obj.getLastTime()!=null?DateUtils.format());
         if(p!=null){
             return  RestResponse.success(p);
         }else{
