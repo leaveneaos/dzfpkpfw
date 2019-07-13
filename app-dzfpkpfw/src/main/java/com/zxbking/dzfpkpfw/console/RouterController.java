@@ -113,7 +113,7 @@ public class RouterController extends AbstractRestController {
     public void generateQRCode4Product(HttpServletRequest request, @PathVariable String orderId, HttpServletResponse response) {
         String longUrl;
         try {
-            longUrl = "https://" + ipAddr + ":" + port + "/invoice/" + orderId;
+            longUrl =  ipAddr + ":" + port + "/invoice/" + orderId;
             // 转换成短url
 //            String shortUrl = ShortNetAddressUtil.generateShortUrl(longUrl);
             // 生成二维码
