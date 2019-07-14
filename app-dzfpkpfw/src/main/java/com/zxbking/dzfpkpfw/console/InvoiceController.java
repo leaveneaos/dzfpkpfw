@@ -68,6 +68,10 @@ public class InvoiceController extends AbstractRestController {
     @RequestMapping(path="",method = RequestMethod.POST)
     @ApiOperation(value = "更新")
     public RestResponse updateCeShi(@RequestBody Invoice ceShi) {
+        if(ceShi.getStatus()!=null && ceShi.getStatus()==3) {
+            ceShi.setFpTime(new Date());
+        }
+        ceShi.setLastTime(new Date());
         Boolean flag = invoiceService.updateInvoice(ceShi);
         if(flag){
             return  RestResponse.success(flag);

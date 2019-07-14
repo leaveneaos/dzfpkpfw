@@ -30,9 +30,9 @@
 	<el-table ref="multipleTable" :data="userData" border tooltip-effect="dark" align="center">
 		<!--<el-table-column align="center" type="selection" width="55">
 		</el-table-column>-->
-		<el-table-column align="center"  label="序号" type="index" >
-		</el-table-column>
-		<el-table-column align="center" text-align="left" prop="orderId" width="170"  label="订单号" >
+		<!--<el-table-column align="center"  label="序号" type="index"   v-if="userData.use == 1"  >-->
+		<!--</el-table-column>-->
+		<el-table-column align="center" text-align="left" prop="orderId" label="订单号"   width="170"  >
 		</el-table-column>
 		<el-table-column align="center" text-align="left" prop="createTime" width="170"  label="打印二维码时间" >
 		</el-table-column>

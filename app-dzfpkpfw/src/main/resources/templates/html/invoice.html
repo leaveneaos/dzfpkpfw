@@ -331,7 +331,7 @@
 					<div class="invoice_cell invoice_cell_border click_hidden">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">电话号码</label></div>
 						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入公司电话号码" id="gsPhone"
-															oninput="value=value.replace(/[^\d\.]/g,'');if(value.length>11)value=value.slice(0,11)"
+
 						></div>
 					</div>
 					<div class="invoice_cell invoice_cell_border click_hidden">
@@ -349,7 +349,11 @@
 					</div>
 					<div class="invoice_cell">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">手机号</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" pattern="[0-9]*" placeholder="请输入个人手机号" id="phone"></div>
+						<!--pattern="[0-9]*"-->
+						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入个人手机号" id="phone"
+
+															oninput="value=value.replace(/[^\d\.]/g,'');if(value.length>11)value=value.slice(0,11)"
+						></div>
 					</div>
 					<div class="invoice_cell">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">邮箱</label></div>
