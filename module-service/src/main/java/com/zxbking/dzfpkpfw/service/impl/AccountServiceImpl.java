@@ -83,6 +83,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<Account> selectAll(){
         AccountExample example =new AccountExample();
+        AccountExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(0);
         List<Account> list = accountMapper.selectByExample(example);
         return list;
     }

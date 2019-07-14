@@ -4,12 +4,14 @@
     <meta charset="utf-8" />
     <title>Insert title here</title>
     <style>
-        body{ text-align:center}
+        body{ text-align:center;
+        margin: 0 0 0 0;
+        }
         .div{ margin:0 0 0 0;
             /*width:240px;*/
             /*height:580px;*/
             /*border:1px solid #F00;*/
-            width: 210px;
+            width: 200px;
             height: 360px;
         }
         img{
@@ -40,8 +42,8 @@
     <p align="left" ><span th:text="${createTime}"></span></p>
     <p align="left"><span>金额（元）：</span><span th:text="${amount}"></span></p>
     <p><img alt="二维码"  th:src="@{/qrcode/generateqrcode/{orderId}(orderId=${invoice.id})}"></p>
-    <p  align="left">1.二维码有效期为7天。</p>
-    <p align="left">2.申请提交后，发票将于24小时内发到您的邮箱或手机。</p>
+    <p  align="left">1.二维码有效期为7天</p>
+    <p align="left">2.申请提交后，发票将于24小时内发到您的邮箱或手机</p>
     <p align="left"><span>3.技术支持：</span><span th:text="${qyphone}"></span></p>
 </div>
 <!--endprint1-->
@@ -68,9 +70,18 @@
 //            window.print();
 //        }
 //    }
+
+function GetQueryString(name)
+{
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if(r!=null)return  unescape(r[2]); return null;
+}
 window.onload = function(){
- window.print()
- window.close()//打印后返回到原界面
+    if(!GetQueryString("test")){
+        window.print()
+        window.close()//打印后返回到原界面
+    }
  }
 </script>
 </body>

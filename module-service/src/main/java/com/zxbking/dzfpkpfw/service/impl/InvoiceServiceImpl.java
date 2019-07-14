@@ -54,7 +54,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public PageInfo selectInvoiceByExample(Invoice invoice, Integer pageNo, Integer pageSize){
+    public PageInfo selectInvoiceByExample(Invoice invoice, Date createTime1,Date createTime2,Integer pageNo, Integer pageSize){
         PageHelper.startPage(pageNo,pageSize);
         InvoiceExample example =new InvoiceExample();
         InvoiceExample.Criteria criteria = example.createCriteria();
@@ -88,7 +88,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 				
             }
         }
-
+        if(createTime1 !=null && createTime2 !=null ){
+            criteria.andCreateTimeBetween(createTime1,createTime2);
+        }
         example.setOrderByClause("create_time desc ");
         List<Invoice> list = invoiceMapper.selectByExample(example);
         PageInfo page=new PageInfo(list);

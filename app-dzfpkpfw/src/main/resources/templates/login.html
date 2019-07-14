@@ -61,8 +61,8 @@
 					'accountName':$userName.val()
 				}
 				$.post("/login",data,function(result){
+					islogin=0;
 					if(result.success){
-						console.log(result.success)
 						window.location.href="/";
 						sessionStorage.setItem('accountName',$userName.val());
 						sessionStorage.setItem('accountId',result.data.accountId);
@@ -73,6 +73,7 @@
 			});
 			
 		});
+		var islogin=0;
 		$(document).keyup(function(event){
 			if(event.keyCode ==13){
 				var $userName = $("#userName");
@@ -82,7 +83,14 @@
 				}else if ($password.val() == "") {
 					$password.focus();
 				}else{
-					$("#submitBtn").trigger("click");
+					if(islogin==0){
+						islogin=1;
+						$("#submitBtn").trigger("click");
+					}else{
+						alert("登录中...");
+						return;
+					}
+
 				}
 			}
 		});

@@ -84,6 +84,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public List<UserInfo> selectAll(){
         UserInfoExample example =new UserInfoExample();
+        UserInfoExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(0);
         List<UserInfo> list = userInfoMapper.selectByExample(example);
         return list;
     }

@@ -330,7 +330,9 @@
 					</div>
 					<div class="invoice_cell invoice_cell_border click_hidden">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">电话号码</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入公司电话号码" id="gsPhone"></div>
+						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入公司电话号码" id="gsPhone"
+															oninput="value=value.replace(/[^\d\.]/g,'');if(value.length>11)value=value.slice(0,11)"
+						></div>
 					</div>
 					<div class="invoice_cell invoice_cell_border click_hidden">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">开户银行</label></div>
@@ -401,16 +403,16 @@
 				}
 			}
 			var data={
-				bankAccountName: $("#bankAccountName").val(),
-				bankName: $("#bankName").val(),
-				email: $("#email").val(),
-				gsAddress: $("#gsAddress").val(),
-				gsPhone: $("#gsPhone").val(),
-				id: $("#id").val(),
-				name: $("#name").val(),
-				nsrsbh: $("#nsrsbh").val(),
+				bankAccountName: $("#bankAccountName").val().trim(),
+				bankName: $("#bankName").val().trim(),
+				email: $("#email").val().trim(),
+				gsAddress: $("#gsAddress").val().trim(),
+				gsPhone: $("#gsPhone").val().trim(),
+				id: $("#id").val().trim(),
+				name: $("#name").val().trim(),
+				nsrsbh: $("#nsrsbh").val().trim(),
 //				orderId: "1111111111111"
-				phone: $("#phone").val(),
+				phone: $("#phone").val().trim(),
 				status: 2,
 				type:new Number(type)
 			}

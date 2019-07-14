@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.zxbking.dzfpkpfw.mapper.*;
 import com.zxbking.dzfpkpfw.model.*;
 import com.zxbking.dzfpkpfw.service.*;
+
+import java.util.Date;
 import java.util.List;
 
 public interface InvoiceService {
@@ -16,7 +18,7 @@ public interface InvoiceService {
 
     boolean updateInvoice(Invoice invoice);
 
-    PageInfo selectInvoiceByExample(Invoice invoice, Integer pageNo, Integer pageSize);
+    PageInfo selectInvoiceByExample(Invoice invoice, Date createTime1,Date createTime2, Integer pageNo, Integer pageSize);
 
     List<Invoice> selectAll();
 }

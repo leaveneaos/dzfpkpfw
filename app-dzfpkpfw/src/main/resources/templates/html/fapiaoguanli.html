@@ -1,6 +1,6 @@
 <h2 class="c_right_title">发票信息管理</h2>
 <div class="p_box">
-	<el-button type="primary" @click="userAddBtn">添加订单</el-button>
+	<!--<el-button type="primary" @click="userAddBtn">添加订单</el-button>-->
 	<el-button type="primary" icon="search" @click="searchForm">查询</el-button>
   	<el-form :model="userManage" :inline="true">
 		<el-form-item label="订单编号：" :label-width="formLabelWidth">
@@ -11,6 +11,15 @@
 	      	<el-option v-for="item in statusList" :key="item.key" :label="item.label" :value="item.value"></el-option>
 	      </el-select>
 	   </el-form-item>
+		<el-form-item label="申请开票时间：" :label-width="formLabelWidth">
+			<el-date-picker
+					v-model="createTimes"
+					type="daterange"
+					range-separator="至"
+					start-placeholder="开始日期"
+					end-placeholder="结束日期">
+			</el-date-picker>
+		</el-form-item>
 		<!--<el-form-item label="是否有效：" :label-width="formLabelWidth">-->
 			<!--<el-select v-model="userManage.useful" placeholder="请选择">-->
 				<!--<el-option v-for="item in usefulOptionsCopy" :key="item.key" :label="item.label" :value="item.value"></el-option>-->
@@ -21,7 +30,9 @@
 	<el-table ref="multipleTable" :data="userData" border tooltip-effect="dark" align="center">
 		<!--<el-table-column align="center" type="selection" width="55">
 		</el-table-column>-->
-		<el-table-column align="center"  label="序号" type="index"  >
+		<el-table-column align="center"  label="序号" type="index" >
+		</el-table-column>
+		<el-table-column align="center" text-align="left" prop="orderId" width="170"  label="订单号" >
 		</el-table-column>
 		<el-table-column align="center" text-align="left" prop="createTime" width="170"  label="打印二维码时间" >
 		</el-table-column>
@@ -33,29 +44,33 @@
 		</el-table-column>
 		<el-table-column align="center" prop="phone" label="手机号码" >
 		</el-table-column>
-		<el-table-column align="center" prop="taxFreeAmount" label="金额（不含税）"  width="120" >
+
+		<el-table-column align="center" prop="taxFreeAmount" label="金额（不含税）"  v-if="userData.use == 0">
 		</el-table-column>
 		<el-table-column align="center" prop="taxAbleAmount" label="金额（含税）" width="110" >
 		</el-table-column>
-		<el-table-column align="center" text-align="left" prop="lastTime" width="170"  label="开票时间" >
+
+		<el-table-column align="center" text-align="left" prop="lastTime" width="170"  label="开票时间"  v-if="userData.use == 0">
 		</el-table-column>
-		<el-table-column align="center" prop="status" label="订单状态" :formatter="keyFormat">
+		<el-table-column align="center" prop="status" label="订单状态" :formatter="keyFormat"  v-if="userData.use == 0">
 		</el-table-column>
-		<el-table-column align="center" prop="type" label="开票类型" :formatter="keyFormat2"  width="90">
+		<el-table-column align="center" prop="type" label="开票类型" :formatter="keyFormat2"  width="90"  v-if="userData.use == 0">
 		</el-table-column>
 		<!--<el-table-column align="center" prop="remark" label="备注" >-->
 		<!--</el-table-column>-->
-		<el-table-column align="center" label="操作"  width="200" v-if="userData.use == 1" >
+
+
+		<el-table-column align="center" label="操作"  width="200" v-if="userData.use==1" >
 			<template scope="scope">
-				<el-button type="text" size="small" v-if="scope.row.status==1"
-						   @click.native.prevent="startUser(scope.row.id)">生成抬头二维码</el-button>
-				<el-button type="text" size="small" @click.native.prevent="userOne(scope.row)">明细</el-button>
+				<el-button type="text" size="small" v-if="scope.row.status==1 ||scope.row.status==2"
+						   @click.native.prevent="startUser(scope.row.id)">发票提取二维码打印</el-button>
+				<!--<el-button type="text" size="small" @click.native.prevent="userOne(scope.row)">明细</el-button>-->
 			</template>
 		</el-table-column>
-		<el-table-column align="center" label="操作"  width="200" v-if="userData.use == 0" >
+		<el-table-column align="center" label="操作"  width="200" v-if="userData.use==0" >
 			<template scope="scope">
-				<el-button type="text" size="small" v-if="scope.row.status == 1"
-						   @click.native.prevent="startUser(scope.row.id)">生成抬头二维码</el-button>
+				<el-button type="text" size="small"  v-if="scope.row.status==1 ||scope.row.status==2"
+						   @click.native.prevent="startUser(scope.row.id)">发票提取二维码打印</el-button>
 				<el-button type="text" size="small" v-if="scope.row.status==2"
 						   @click.native.prevent="kjfpUser(scope.row.id)">开具发票</el-button>
 
@@ -66,7 +81,7 @@
 							class="redfont" type="text" size="small" @click.native.prevent="deleteRow(scope.row.id)">删除</el-button>
 			</template>
 		</el-table-column>
-		<el-table-column align="center" prop="lastUser" label="提交用户" >
+		<el-table-column align="center" prop="lastUser" label="提交用户" v-if="userData.use == 0">
 		</el-table-column>
 	</el-table>
 	<div class="paginationTool">
@@ -247,6 +262,7 @@ var app = new Vue({
 el: '#app',
 data : {
 	userData: [],
+	createTimes:[],
 	userManage:{
 	  orderId:'',
 	  status:'',
@@ -539,6 +555,14 @@ data : {
 		searchForm(){
 			const that = this;
 				that.userManage.deleted=0;
+			if(that.createTimes.length>0 && that.createTimes[0] && that.createTimes[1]){
+				that.userManage.createTime1=that.createTimes[0].getTime();
+				that.userManage.createTime2=that.createTimes[1].getTime();
+			}else{
+				that.userManage.createTime1="";
+				that.userManage.createTime2="";
+			}
+			console.log(that.userManage)
 			$.get("/rest/invoice/plist",that.userManage,function(result){
 				if(result.success){
 				    console.info(result)
@@ -553,6 +577,10 @@ data : {
 						if(that.userData[i].taxAbleAmount){
 							that.userData[i].taxAbleAmount= that.userData[i].taxAbleAmount.toFixed(2);
 						}
+						if(that.userData[i].taxFreeAmount){
+							that.userData[i].taxFreeAmount= that.userData[i].taxFreeAmount.toFixed(2);
+						}
+
 					}
 
 					that.userData.use= sessionStorage.getItem('accountName')=="admin"?0:1;
