@@ -78,14 +78,14 @@ public class RouterController extends AbstractRestController {
             invoice.setCreateTime(new Date());
             BigDecimal decimal = new BigDecimal(amount);
             decimal = decimal.setScale(2, BigDecimal.ROUND_HALF_DOWN);
-            invoice.setTaxAbleAmount(decimal.longValue());
+            invoice.setTaxAbleAmount(decimal);
 
             BigDecimal invoiceHsBigDecimal = new BigDecimal(invoiceHs);
             invoiceHsBigDecimal = invoiceHsBigDecimal.setScale(len, BigDecimal.ROUND_HALF_DOWN);
 //            invoiceHsBigDecimal = (new BigDecimal(1)).subtract(invoiceHsBigDecimal);
 //            decimal = decimal.multiply(invoiceHsBigDecimal);
             decimal = decimal.divide(invoiceHsBigDecimal, len, BigDecimal.ROUND_HALF_DOWN);
-            invoice.setTaxFreeAmount(decimal.longValue());
+            invoice.setTaxFreeAmount(decimal);
             String accountId = (String)request.getSession().getAttribute(SystemConfig.USER_NAME);
             if(accountId!=null){
                 UserInfo user = userInfoService.findById(accountId);
@@ -102,7 +102,7 @@ public class RouterController extends AbstractRestController {
             model.addAttribute("qymc", qymc);
             model.addAttribute("qyphone", qyphone);
             model.addAttribute("createTime", DateUtils.format(new Date(), "yyyy年MM月dd日 hh:mm:ss"));//invoice.getCreateTime()
-            BigDecimal bigDecimal = new BigDecimal(invoice.getTaxAbleAmount());
+            BigDecimal bigDecimal = invoice.getTaxAbleAmount();
             bigDecimal = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_DOWN);
             model.addAttribute("amount", bigDecimal.toString());
         } else {

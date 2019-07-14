@@ -79,8 +79,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 				if("gsPhone".equals(entry.getKey())){ criteria.andGsPhoneLike("%"+entry.getValue()+"%"); continue; }
 				if("bankName".equals(entry.getKey())){ criteria.andBankNameLike("%"+entry.getValue()+"%"); continue; }
 				if("bankAccountName".equals(entry.getKey())){ criteria.andBankAccountNameLike("%"+entry.getValue()+"%"); continue; }
-				if("taxAbleAmount".equals(entry.getKey())){ criteria.andTaxAbleAmountEqualTo((java.lang.Long)entry.getValue()); continue; }
-				if("taxFreeAmount".equals(entry.getKey())){ criteria.andTaxFreeAmountEqualTo((java.lang.Long)entry.getValue()); continue; }
+				if("taxAbleAmount".equals(entry.getKey())){ criteria.andTaxAbleAmountEqualTo((java.math.BigDecimal)entry.getValue()); continue; }
+				if("taxFreeAmount".equals(entry.getKey())){ criteria.andTaxFreeAmountEqualTo((java.math.BigDecimal)entry.getValue()); continue; }
 				if("status".equals(entry.getKey())){ criteria.andStatusEqualTo((java.lang.Integer)entry.getValue()); continue; }
 				if("orderId".equals(entry.getKey())){ criteria.andOrderIdLike("%"+entry.getValue()+"%"); continue; }
 				if("remark".equals(entry.getKey())){ criteria.andRemarkLike("%"+entry.getValue()+"%"); continue; }
