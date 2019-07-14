@@ -8,7 +8,9 @@ import com.ihyht.commons.lang.model.RestResponse;
 import com.zxbking.dzfpkpfw.base.AbstractRestController;
 import com.zxbking.dzfpkpfw.config.SystemConfig;
 import com.zxbking.dzfpkpfw.model.Invoice;
+import com.zxbking.dzfpkpfw.model.UserInfo;
 import com.zxbking.dzfpkpfw.service.InvoiceService;
+import com.zxbking.dzfpkpfw.service.UserInfoService;
 import com.zxbking.dzfpkpfw.utils.QRCodeUtil;
 import com.zxbking.dzfpkpfw.utils.ShortNetAddressUtil;
 import io.swagger.annotations.Api;
@@ -61,9 +63,10 @@ public class RouterController extends AbstractRestController {
     private String qyphone;
     @Value("${invoice.hs:0.15}")
     private String invoiceHs;
-
+    @Autowired
+    private UserInfoService userInfoService;
     @RequestMapping(value = "/ewm", method = RequestMethod.GET)
-    public String sayHelloForm(@RequestParam(name = "orderId", required = false) String orderId, @RequestParam(name = "amount", required = false) String amount, Model model) {
+    public String sayHelloForm(HttpServletRequest request,@RequestParam(name = "orderId", required = false) String orderId, @RequestParam(name = "amount", required = false) String amount, Model model) {
         Invoice invoice = null;
         if (StringUtils.isNotEmpty(orderId)) {
             invoice = invoiceService.findById(orderId);
@@ -83,6 +86,11 @@ public class RouterController extends AbstractRestController {
 //            decimal = decimal.multiply(invoiceHsBigDecimal);
             decimal = decimal.divide(invoiceHsBigDecimal, len, BigDecimal.ROUND_HALF_DOWN);
             invoice.setTaxFreeAmount(decimal.longValue());
+            String accountId = (String)request.getSession().getAttribute(SystemConfig.USER_NAME);
+            if(accountId!=null){
+                UserInfo user = userInfoService.findById(accountId);
+                invoice.setLastUser(user.getUserName());
+            }
             Boolean flag = invoiceService.addInvoice(invoice);
             if (!flag) {
                 logger.error("订单[" + invoice.getId() + "]保存出错，请人工处理！数据详情：" + invoice);
@@ -93,7 +101,7 @@ public class RouterController extends AbstractRestController {
             model.addAttribute("invoice", invoice);
             model.addAttribute("qymc", qymc);
             model.addAttribute("qyphone", qyphone);
-            model.addAttribute("createTime", DateUtils.format(invoice.getCreateTime(), "yyyy年MM月dd日 hh:mm:ss"));
+            model.addAttribute("createTime", DateUtils.format(new Date(), "yyyy年MM月dd日 hh:mm:ss"));//invoice.getCreateTime()
             BigDecimal bigDecimal = new BigDecimal(invoice.getTaxAbleAmount());
             bigDecimal = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_DOWN);
             model.addAttribute("amount", bigDecimal.toString());

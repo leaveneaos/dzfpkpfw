@@ -21,48 +21,52 @@
 	<el-table ref="multipleTable" :data="userData" border tooltip-effect="dark" align="center">
 		<!--<el-table-column align="center" type="selection" width="55">
 		</el-table-column>-->
-		<!--<el-table-column align="center" prop="orderId" label="订单号"  >-->
-		<!--</el-table-column>-->
-		<el-table-column align="center" prop="nsrsbh" label="税号"  >
+		<el-table-column align="center"  label="序号" type="index"  >
 		</el-table-column>
-		<el-table-column align="center" prop="taxAbleAmount" label="金额（含税）"  >
+		<el-table-column align="center" text-align="left" prop="createTime" width="170"  label="打印二维码时间" >
+		</el-table-column>
+		<el-table-column align="center" prop="nsrsbh" label="税号"   width="170"  >
+		</el-table-column>
+		<el-table-column align="center" prop="name" label="单位名称" >
+		</el-table-column>
+		<el-table-column align="center" prop="email" width="150"  label="邮箱" >
 		</el-table-column>
 		<el-table-column align="center" prop="phone" label="手机号码" >
 		</el-table-column>
-		<el-table-column align="center" prop="email" label="邮箱" >
+		<el-table-column align="center" prop="taxFreeAmount" label="金额（不含税）"  width="120" >
 		</el-table-column>
-		<!--<el-table-column align="center" prop="taxFreeAmount" label="金额（不含税）"  >-->
-		<!--</el-table-column>-->
-		<el-table-column align="center" prop="lastTime" label="开票时间"  >
+		<el-table-column align="center" prop="taxAbleAmount" label="金额（含税）" width="110" >
 		</el-table-column>
-		<el-table-column align="center" prop="type" label="开票类型" :formatter="keyFormat2">
-		</el-table-column>
-		<el-table-column align="center" prop="name" label="发票名称" >
+		<el-table-column align="center" text-align="left" prop="lastTime" width="170"  label="开票时间" >
 		</el-table-column>
 		<el-table-column align="center" prop="status" label="订单状态" :formatter="keyFormat">
 		</el-table-column>
-		<el-table-column align="center" prop="remark" label="备注" >
+		<el-table-column align="center" prop="type" label="开票类型" :formatter="keyFormat2"  width="90">
 		</el-table-column>
-		<el-table-column align="center" label="操作"  width="200" v-if="userData.use==1" >
+		<!--<el-table-column align="center" prop="remark" label="备注" >-->
+		<!--</el-table-column>-->
+		<el-table-column align="center" label="操作"  width="200" v-if="userData.use == 1" >
 			<template scope="scope">
 				<el-button type="text" size="small" v-if="scope.row.status==1"
 						   @click.native.prevent="startUser(scope.row.id)">生成抬头二维码</el-button>
 				<el-button type="text" size="small" @click.native.prevent="userOne(scope.row)">明细</el-button>
 			</template>
 		</el-table-column>
-		<el-table-column align="center" label="操作"  width="200" v-if="userData.use==0" >
+		<el-table-column align="center" label="操作"  width="200" v-if="userData.use == 0" >
 			<template scope="scope">
-				<el-button type="text" size="small" v-if="scope.row.status==1"
+				<el-button type="text" size="small" v-if="scope.row.status == 1"
 						   @click.native.prevent="startUser(scope.row.id)">生成抬头二维码</el-button>
 				<el-button type="text" size="small" v-if="scope.row.status==2"
 						   @click.native.prevent="kjfpUser(scope.row.id)">开具发票</el-button>
 
-				<el-button type="text" size="small" v-if="scope.row.status!=5"
+				<el-button type="text" size="small" v-if="scope.row.status != 5"
 						   type="text" size="small" @click.native.prevent="userEdit(scope.row)">编辑</el-button>
 				<el-button type="text" size="small" @click.native.prevent="userOne(scope.row)">明细</el-button>
-				<el-button  type="text" size="small" v-if="scope.row.status!=5"
+				<el-button  type="text" size="small" v-if="scope.row.status != 5"
 							class="redfont" type="text" size="small" @click.native.prevent="deleteRow(scope.row.id)">删除</el-button>
 			</template>
+		</el-table-column>
+		<el-table-column align="center" prop="lastUser" label="提交用户" >
 		</el-table-column>
 	</el-table>
 	<div class="paginationTool">
@@ -543,9 +547,16 @@ data : {
 						if(that.userData[i].lastTime){
 							that.userData[i].lastTime= formatDate(new Date(that.userData[i].lastTime));
 						}
+						if(that.userData[i].createTime){
+							that.userData[i].createTime= formatDate(new Date(that.userData[i].createTime));
+						}
+						if(that.userData[i].taxAbleAmount){
+							that.userData[i].taxAbleAmount= that.userData[i].taxAbleAmount.toFixed(2);
+						}
 					}
 
 					that.userData.use= sessionStorage.getItem('accountName')=="admin"?0:1;
+					console.log(sessionStorage.getItem('accountName'),that.userData.use)
                     that.totalNum = result.data.total;
 				}
 			});
@@ -635,6 +646,9 @@ function formatDate(now) {
 	var hour=now.getHours();
 	var minute=now.getMinutes();
 	var second=now.getSeconds();
-	return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+	(hour+"").length==1?hour="0"+hour:hour;
+	(minute+"").length==1?minute="0"+minute:minute;
+	(second+"").length==1?second="0"+second:second;
+	return year+"年"+month+"月"+date+"日 "+hour+":"+minute+":"+second;
 }
 </script>

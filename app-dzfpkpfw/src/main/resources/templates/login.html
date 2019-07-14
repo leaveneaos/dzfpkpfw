@@ -75,7 +75,15 @@
 		});
 		$(document).keyup(function(event){
 			if(event.keyCode ==13){
-				$("#submitBtn").trigger("click");
+				var $userName = $("#userName");
+				var $password = $("#password");
+				if ($userName.val() == ""){
+					$userName.focus();
+				}else if ($password.val() == "") {
+					$password.focus();
+				}else{
+					$("#submitBtn").trigger("click");
+				}
 			}
 		});
 	</script>

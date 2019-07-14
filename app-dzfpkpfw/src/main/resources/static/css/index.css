@@ -8,8 +8,8 @@
 .container .dropdown.c_user .dropdown-menu{left: -73px !important;}
 
 .c_section{width: 100%;height: 100%;}
-.c_section_left{width: 15%;height: 100%;float:left;padding: 0px;background: #F8F8F8;border-right: 1px solid #e7e7e7;box-sizing: border-box;}
-.c_section_right{width: 85%;height: 100%;float: left;}
+.c_section_left{width: 12%;height: 100%;float:left;padding: 0px;background: #F8F8F8;border-right: 1px solid #e7e7e7;box-sizing: border-box;}
+.c_section_right{width: 88%;height: 100%;float: left;}
 .c_ul{background: #f8f8f8;margin: 0px;padding: 0px;}
 .c_ul li{height: 40px;line-height:40px;border-bottom: 1px solid #e7e7e7;padding-left: 15px;}
 .c_ul li:hover{background: #e7e7e7;}

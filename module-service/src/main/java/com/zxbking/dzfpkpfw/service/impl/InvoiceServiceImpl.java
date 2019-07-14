@@ -89,7 +89,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             }
         }
 
-        example.setOrderByClause("id");
+        example.setOrderByClause("create_time desc ");
         List<Invoice> list = invoiceMapper.selectByExample(example);
         PageInfo page=new PageInfo(list);
         return page;
