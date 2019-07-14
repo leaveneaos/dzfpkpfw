@@ -1,5 +1,6 @@
 package com.zxbking.dzfpkpfw.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1171,52 +1172,52 @@ public class InvoiceExample {
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountEqualTo(Long value) {
+        public Criteria andTaxAbleAmountEqualTo(BigDecimal value) {
             addCriterion("tax_able_amount =", value, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountNotEqualTo(Long value) {
+        public Criteria andTaxAbleAmountNotEqualTo(BigDecimal value) {
             addCriterion("tax_able_amount <>", value, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountGreaterThan(Long value) {
+        public Criteria andTaxAbleAmountGreaterThan(BigDecimal value) {
             addCriterion("tax_able_amount >", value, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountGreaterThanOrEqualTo(Long value) {
+        public Criteria andTaxAbleAmountGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("tax_able_amount >=", value, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountLessThan(Long value) {
+        public Criteria andTaxAbleAmountLessThan(BigDecimal value) {
             addCriterion("tax_able_amount <", value, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountLessThanOrEqualTo(Long value) {
+        public Criteria andTaxAbleAmountLessThanOrEqualTo(BigDecimal value) {
             addCriterion("tax_able_amount <=", value, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountIn(List<Long> values) {
+        public Criteria andTaxAbleAmountIn(List<BigDecimal> values) {
             addCriterion("tax_able_amount in", values, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountNotIn(List<Long> values) {
+        public Criteria andTaxAbleAmountNotIn(List<BigDecimal> values) {
             addCriterion("tax_able_amount not in", values, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountBetween(Long value1, Long value2) {
+        public Criteria andTaxAbleAmountBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("tax_able_amount between", value1, value2, "taxAbleAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxAbleAmountNotBetween(Long value1, Long value2) {
+        public Criteria andTaxAbleAmountNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("tax_able_amount not between", value1, value2, "taxAbleAmount");
             return (Criteria) this;
         }
@@ -1231,52 +1232,52 @@ public class InvoiceExample {
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountEqualTo(Long value) {
+        public Criteria andTaxFreeAmountEqualTo(BigDecimal value) {
             addCriterion("tax_free_amount =", value, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountNotEqualTo(Long value) {
+        public Criteria andTaxFreeAmountNotEqualTo(BigDecimal value) {
             addCriterion("tax_free_amount <>", value, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountGreaterThan(Long value) {
+        public Criteria andTaxFreeAmountGreaterThan(BigDecimal value) {
             addCriterion("tax_free_amount >", value, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountGreaterThanOrEqualTo(Long value) {
+        public Criteria andTaxFreeAmountGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("tax_free_amount >=", value, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountLessThan(Long value) {
+        public Criteria andTaxFreeAmountLessThan(BigDecimal value) {
             addCriterion("tax_free_amount <", value, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountLessThanOrEqualTo(Long value) {
+        public Criteria andTaxFreeAmountLessThanOrEqualTo(BigDecimal value) {
             addCriterion("tax_free_amount <=", value, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountIn(List<Long> values) {
+        public Criteria andTaxFreeAmountIn(List<BigDecimal> values) {
             addCriterion("tax_free_amount in", values, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountNotIn(List<Long> values) {
+        public Criteria andTaxFreeAmountNotIn(List<BigDecimal> values) {
             addCriterion("tax_free_amount not in", values, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountBetween(Long value1, Long value2) {
+        public Criteria andTaxFreeAmountBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("tax_free_amount between", value1, value2, "taxFreeAmount");
             return (Criteria) this;
         }
 
-        public Criteria andTaxFreeAmountNotBetween(Long value1, Long value2) {
+        public Criteria andTaxFreeAmountNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("tax_free_amount not between", value1, value2, "taxFreeAmount");
             return (Criteria) this;
         }

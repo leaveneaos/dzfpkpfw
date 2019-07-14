@@ -2,6 +2,7 @@ package com.zxbking.dzfpkpfw.model;
 
 import com.ihyht.alyxjs.nbjcpt.component.generator.IdEntity;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Invoice extends IdEntity implements Serializable {
@@ -115,14 +116,14 @@ public class Invoice extends IdEntity implements Serializable {
      * 表 : tb_invoice
      * 对应字段 : tax_able_amount
      */
-    private Long taxAbleAmount;
+    private BigDecimal taxAbleAmount;
 
     /**
      * 不含税金额
      * 表 : tb_invoice
      * 对应字段 : tax_free_amount
      */
-    private Long taxFreeAmount;
+    private BigDecimal taxFreeAmount;
 
     /**
      * 状态
@@ -429,7 +430,7 @@ public class Invoice extends IdEntity implements Serializable {
      *
      * @return tb_invoice.tax_able_amount：金额含税
      */
-    public Long getTaxAbleAmount() {
+    public BigDecimal getTaxAbleAmount() {
         return taxAbleAmount;
     }
 
@@ -438,7 +439,7 @@ public class Invoice extends IdEntity implements Serializable {
      *
      * @param taxAbleAmount  金额含税
      */
-    public void setTaxAbleAmount(Long taxAbleAmount) {
+    public void setTaxAbleAmount(BigDecimal taxAbleAmount) {
         this.taxAbleAmount = taxAbleAmount;
     }
 
@@ -447,7 +448,7 @@ public class Invoice extends IdEntity implements Serializable {
      *
      * @return tb_invoice.tax_free_amount：不含税金额
      */
-    public Long getTaxFreeAmount() {
+    public BigDecimal getTaxFreeAmount() {
         return taxFreeAmount;
     }
 
@@ -456,7 +457,7 @@ public class Invoice extends IdEntity implements Serializable {
      *
      * @param taxFreeAmount  不含税金额
      */
-    public void setTaxFreeAmount(Long taxFreeAmount) {
+    public void setTaxFreeAmount(BigDecimal taxFreeAmount) {
         this.taxFreeAmount = taxFreeAmount;
     }
 
