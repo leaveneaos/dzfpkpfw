@@ -384,15 +384,18 @@
 		});
 		function save() {
 			var that = this;
+			var tmpType = new Number(type);
 			var tmp_name = $("#name").val();
 			if(!tmp_name || tmp_name.trim().length<=0){
 				$.toast("发票名称必填", "cancel");
 				return ;
 			}
 			var tmp_nsrsbh = $("#nsrsbh").val();
-			if(!tmp_nsrsbh || tmp_nsrsbh.trim().length!=18){
+			if(tmpType==1 && (!tmp_nsrsbh || tmp_nsrsbh.trim().length!=18)){
 				$.toast("纳税人识别号必须为18位", "cancel");
 				return ;
+			}else{
+				$("#name").val("");
 			}
 			var tmp_phone = $("#phone").val();
 			var tmp_email =  $("#email").val();

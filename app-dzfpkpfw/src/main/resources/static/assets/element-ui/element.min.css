@@ -1802,7 +1802,9 @@
 .el-table tr {
 	background-color: #fff
 }
-
+.el-table--striped .el-table__body tr.el-table__row--striped.el-table__row--striped.el-table__row--striped td {
+	background-color: #00800042; /*替换为你需要的颜色，觉得优先级不够就加!important*/
+}
 .el-table .hidden-columns {
 	position: absolute;
 	z-index: -1

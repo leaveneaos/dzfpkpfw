@@ -65,16 +65,24 @@ public class InvoiceController extends AbstractRestController {
         }
     }
 
+    /**
+     *
+     * @param ceShi
+     * @param opsType opsType:1 表示开具发票 opsType:0 表示删除 opsType:2 表示修改
+     * @return
+     */
     @RequestMapping(path="",method = RequestMethod.POST)
     @ApiOperation(value = "更新")
-    public RestResponse updateCeShi(@RequestBody Invoice ceShi) {
-        if(ceShi.getStatus()!=null && ceShi.getStatus()==3) {
+    public RestResponse updateCeShi(@RequestBody Invoice ceShi,@RequestParam(defaultValue = "-1") int opsType) {
+        if(opsType==1){
             ceShi.setFpTime(new Date());
+        }else{
+            ceShi.setFpTime(null);
         }
         ceShi.setLastTime(new Date());
         Boolean flag = invoiceService.updateInvoice(ceShi);
         if(flag){
-            return  RestResponse.success(flag);
+            return  RestResponse.success(ceShi);
         }else{
             return  RestResponse.failed(ApiReturnCodeEnum.updateFail);
         }

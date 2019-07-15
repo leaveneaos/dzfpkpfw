@@ -27,7 +27,7 @@
 		<!--</el-form-item>-->
     </el-form>
 
-	<el-table ref="multipleTable" :data="userData" border tooltip-effect="dark" align="center">
+	<el-table ref="multipleTable" :data="userData" border tooltip-effect="dark" align="center" :row-style="tableRowStyle">
 		<!--<el-table-column align="center" type="selection" width="55">
 		</el-table-column>-->
 		<!--<el-table-column align="center"  label="序号" type="index"   v-if="userData.use == 1"  >-->
@@ -50,7 +50,7 @@
 		<el-table-column align="center" prop="taxAbleAmount" label="金额（含税）" width="110" >
 		</el-table-column>
 
-		<el-table-column align="center" text-align="left" prop="lastTime" width="170"  label="开票时间"  v-if="userData.use == 0">
+		<el-table-column align="center" text-align="left" prop="fpTime" width="170"  label="开票时间"  v-if="userData.use == 0">
 		</el-table-column>
 		<el-table-column align="center" prop="status" label="订单状态" :formatter="keyFormat"  v-if="userData.use == 0">
 		</el-table-column>
@@ -72,7 +72,7 @@
 				<el-button type="text" size="small"  v-if="scope.row.status==1 ||scope.row.status==2"
 						   @click.native.prevent="startUser(scope.row.id)">发票提取二维码打印</el-button>
 				<el-button type="text" size="small" v-if="scope.row.status==2"
-						   @click.native.prevent="kjfpUser(scope.row.id)">开具发票</el-button>
+						   @click.native.prevent="kjfpUser(scope.row)">开具发票</el-button>
 
 				<el-button type="text" size="small" v-if="scope.row.status != 5"
 						   type="text" size="small" @click.native.prevent="userEdit(scope.row)">编辑</el-button>
@@ -89,7 +89,7 @@
 	      @size-change="handleSizeChange"
 	      @current-change="handleCurrentChange"
 	      :current-page="currentPage"
-	      :page-sizes="[10, 20, 30, 40]"
+	      :page-sizes="[10, 20, 30, 40,50,100]"
 		  :page-size="userManage.pageSize"
 	      layout="total, sizes, prev, pager, next, jumper"
 	      :total="totalNum">
@@ -371,6 +371,13 @@ data : {
 		this.searchForm();
 	},
 	methods: {
+      tableRowStyle(row) {
+			if (row.status === 3) {
+				return 'background-color: #00800042;'
+			} else {
+				return 'background-color: #fff'
+			}
+		},
 		keyFormat2(row, column){
 			var key=row[column.property];
 			if (key == undefined) {
@@ -476,7 +483,6 @@ data : {
 				async:true,
 				dataType:"json",
 				success:function(res){
-					console.info(res)
 					that.userEditForm = res.data;
 					that.userEdit1 = true;
 				}
@@ -486,10 +492,9 @@ data : {
 		commitEdit(){
 			var that = this;
             that.userEditForm.lastTime = new Date();
-			console.log( that.userEditForm)
 			$.ajax({
 				type: "post",
-				url: "/rest/invoice",
+				url: "/rest/invoice?opsType=2",
 				async: true,
 				data: JSON.stringify(that.userEditForm),
 				//  数据类型必须为application/x-www-form-urlencoded之外的类型
@@ -525,7 +530,7 @@ data : {
 				var delDate = {"id":id,"deleted":1,"delete_time":new Date()};
 			$.ajax({
 				type: "post",
-				url: "/rest/invoice",
+				url: "/rest/invoice?opsType=0",
 				async: true,
 				data: JSON.stringify(delDate),
 				//  数据类型必须为application/x-www-form-urlencoded之外的类型
@@ -568,23 +573,9 @@ data : {
 				    console.info(result)
                     that.userData = result.data.list;
 					for(var i=0;i<that.userData.length;i++){
-						if(that.userData[i].lastTime){
-							that.userData[i].lastTime= formatDate(new Date(that.userData[i].lastTime));
-						}
-						if(that.userData[i].createTime){
-							that.userData[i].createTime= formatDate(new Date(that.userData[i].createTime));
-						}
-						if(that.userData[i].taxAbleAmount){
-							that.userData[i].taxAbleAmount= that.userData[i].taxAbleAmount.toFixed(2);
-						}
-						if(that.userData[i].taxFreeAmount){
-							that.userData[i].taxFreeAmount= that.userData[i].taxFreeAmount.toFixed(2);
-						}
-
+						initKPXX(that.userData[i])
 					}
-
 					that.userData.use= sessionStorage.getItem('accountName')=="admin"?0:1;
-					console.log(sessionStorage.getItem('accountName'),that.userData.use)
                     that.totalNum = result.data.total;
 				}
 			});
@@ -606,18 +597,18 @@ data : {
                 }
             });
         },
-		kjfpUser(id){
+		kjfpUser(obj){
 			const that = this;
-			that.$confirm('是否确定已开具发票?', '提示', {
-				confirmButtonText: '确定',
-				cancelButtonText: '取消',
-				type: 'warning'
-			}).then(() => {
+//			that.$confirm('是否确定已开具发票?', '提示', {
+//				confirmButtonText: '确定',
+//				cancelButtonText: '取消',
+//				type: 'warning'
+//			}).then(() => {
 			$.ajax({
 				type: "post",
-				url: "/rest/invoice",
+				url: "/rest/invoice?opsType=1",
 				async: true,
-				data: JSON.stringify({id:id,status:3}),
+				data: JSON.stringify({id:obj.id,status:3}),
 				//  数据类型必须为application/x-www-form-urlencoded之外的类型
 				contentType: "application/json;charset=UTF-8",
 				dataType: "json",
@@ -627,6 +618,9 @@ data : {
 							type: 'success',
 							message: '开票成功!'
 						});
+						initKPXX(res.data)
+						obj.status=res.data.status
+						obj.fpTime=res.data.fpTime
 					} else {
 						that.$message({
 							type: 'error',
@@ -636,8 +630,8 @@ data : {
 				}
 			});
 
-		}).catch(() => {
-			});
+//		}).catch(() => {
+//			});
 		},
         startUser(id){
             const that = this;
@@ -667,6 +661,26 @@ data : {
 	},
 
 });
+function initKPXX(obj){
+	if(obj.lastTime){
+		obj.lastTime= formatDate(new Date(obj.lastTime));
+	}
+	if(obj.createTime) {
+		obj.createTime = formatDate(new Date(obj.createTime));
+	}
+	if(obj.status && obj.status==3 && obj.fpTime){
+		obj.fpTime= formatDate(new Date(obj.fpTime));
+	}else{
+		obj.fpTime=""
+	}
+
+	if(obj.taxAbleAmount){
+		obj.taxAbleAmount= obj.taxAbleAmount.toFixed(2);
+	}
+	if(obj.taxFreeAmount){
+		obj.taxFreeAmount= obj.taxFreeAmount.toFixed(2);
+	}
+}
 function formatDate(now) {
 	var year=now.getFullYear();
 	var month=now.getMonth()+1;
