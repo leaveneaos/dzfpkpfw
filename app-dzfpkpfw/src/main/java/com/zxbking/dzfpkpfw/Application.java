@@ -3,18 +3,8 @@ package com.zxbking.dzfpkpfw;
 import com.ihyht.alyxjs.nbjcpt.component.dao.mybatis.DaoMybatisConfig;
 import com.ihyht.alyxjs.nbjcpt.component.swagger.SwaggerConfig;
 import com.ihyht.alyxjs.wfw.component.cache.redis.FrameworkCacheConfig;
-import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
-import org.apache.tomcat.websocket.server.WsSci;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatContextCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 
