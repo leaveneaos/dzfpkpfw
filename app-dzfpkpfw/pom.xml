@@ -92,6 +92,10 @@
             <artifactId>component-cache-redis</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.ihyht.alyxjs.wfw</groupId>
+            <artifactId>component-mail</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

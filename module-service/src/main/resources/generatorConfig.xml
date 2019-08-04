@@ -39,13 +39,16 @@
 
 
 
-        <table tableName="tb_invoice" domainObjectName="Invoice">
-            <generatedKey column="id" sqlStatement=" select replace(uuid(),'-','')" />
-        </table>
-        <table tableName="tb_base_userinfo" domainObjectName="UserInfo">
-            <generatedKey column="id" sqlStatement=" select replace(uuid(),'-','')" />
-        </table>
-        <table tableName="tb_base_account" domainObjectName="Account">
+        <!--<table tableName="tb_invoice" domainObjectName="Invoice">-->
+            <!--<generatedKey column="id" sqlStatement=" select replace(uuid(),'-','')" />-->
+        <!--</table>-->
+        <!--<table tableName="tb_base_userinfo" domainObjectName="UserInfo">-->
+            <!--<generatedKey column="id" sqlStatement=" select replace(uuid(),'-','')" />-->
+        <!--</table>-->
+        <!--<table tableName="tb_base_account" domainObjectName="Account">-->
+            <!--<generatedKey column="id" sqlStatement=" select replace(uuid(),'-','')" />-->
+        <!--</table>-->
+        <table tableName="tb_base_nsr" domainObjectName="Nsr">
             <generatedKey column="id" sqlStatement=" select replace(uuid(),'-','')" />
         </table>
     </context>

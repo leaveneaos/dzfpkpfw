@@ -304,7 +304,19 @@
 				<div class="invoice_cells">
 					<div class="invoice_cell">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label invoice_cell_label_simbol">名称</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入关键词" id="name"></div>
+						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入关键词" id="name"
+															 list="browsers" oninput="CX_NSR_LIST_NSRMC(this)"
+						>
+							<!--onchange="CX_NSR_LIST_NSRMC_BM(this)"-->
+							<!--"-->
+							<!--<input class="browsers" list="browsers"> browsers-->
+							<datalist id="browsers" >
+								<option value="清醒">
+								<option value="嗜睡">
+								<option value="烦躁">
+								<option value="昏迷">
+							</datalist>
+						</div>
 						<!--支持模糊匹配-->
 					</div>
 				</div>
@@ -312,7 +324,7 @@
 					<div class="invoice_cell click_hidden">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label invoice_cell_label_simbol">税号</label></div>
 						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入纳税人识别号(必填)" id="nsrsbh"
-															oninput="if(value.length>18)value=value.slice(0,18)"
+																oninput="if(value.length>18)value=value.slice(0,18)"
 						></div>
 					</div>
 					<!--<div class="invoice_cell">-->
@@ -326,21 +338,21 @@
 					<!--</div>-->
 					<div class="invoice_cell invoice_cell_border click_hidden">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">公司地址</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入公司地址" id="gsAddress"></div>
+						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入公司地址" id="gsAddress" oninput="if(value.length>0)value=value.replace(/\s+/g,'')"></div>
 					</div>
 					<div class="invoice_cell invoice_cell_border click_hidden">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">电话号码</label></div>
 						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入公司电话号码" id="gsPhone"
-
+															oninput="if(value.length>0)value=value.replace(/\s+/g,'')"
 						></div>
 					</div>
 					<div class="invoice_cell invoice_cell_border click_hidden">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">开户银行</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入开户银行" id="bankName"></div>
+						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入开户银行" id="bankName" oninput="if(value.length>0)value=value.replace(/\s+/g,'')"></div>
 					</div>
 					<div class="invoice_cell invoice_cell_border click_hidden">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">银行账号</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入银行账号" id="bankAccountName"></div>
+						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入银行账号" id="bankAccountName" oninput="if(value.length>0)value=value.replace(/\s+/g,'')"></div>
 					</div>
 				</div>
 				<div class="invoice_cells">
@@ -357,7 +369,7 @@
 					</div>
 					<div class="invoice_cell">
 						<div class="invoice_cell_bd"><label class="invoice_cell_label">邮箱</label></div>
-						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入个人邮箱" id="email"></div>
+						<div class="invoice_cell_hd"><input class="invoice_input" type="text" placeholder="请输入个人邮箱" id="email" oninput="if(value.length>0)value=value.replace(/\s+/g,'')"></div>
 					</div>
 				</div>
 				<div class="invoice_button">
@@ -385,22 +397,22 @@
 		function save() {
 			var that = this;
 			var tmpType = new Number(type);
-			var tmp_name = $("#name").val();
-			if(!tmp_name || tmp_name.trim().length<=0){
+			var tmp_name = $("#name").val().trim();
+			if(!tmp_name || tmp_name.length<=0){
 				$.toast("发票名称必填", "cancel");
 				return ;
 			}
-			var tmp_nsrsbh = $("#nsrsbh").val();
+			var tmp_nsrsbh = $("#nsrsbh").val().trim();
 			if(tmpType==1){
-				if(!tmp_nsrsbh || tmp_nsrsbh.trim().length!=18) {
+				if(!tmp_nsrsbh || tmp_nsrsbh.length!=18) {
 					$.toast("纳税人识别号必须为18位", "cancel");
 					return;
 				}
 			}else if(tmpType==2){
 				$("#nsrsbh").val("");
 			}
-			var tmp_phone = $("#phone").val();
-			var tmp_email =  $("#email").val();
+			var tmp_phone = $("#phone").val().trim();
+			var tmp_email =  $("#email").val().trim();
 			if((tmp_phone && tmp_phone.trim().length==11)||(tmp_email && tmp_email.trim().length>0)){
 			}else{
 				if(tmp_phone && tmp_phone.trim().length!=11){
@@ -414,14 +426,14 @@
 			var data={
 				bankAccountName: $("#bankAccountName").val().trim(),
 				bankName: $("#bankName").val().trim(),
-				email: $("#email").val().trim(),
+				email: tmp_email,
 				gsAddress: $("#gsAddress").val().trim(),
 				gsPhone: $("#gsPhone").val().trim(),
 				id: $("#id").val().trim(),
 				name: $("#name").val().trim(),
 				nsrsbh: $("#nsrsbh").val().trim(),
 //				orderId: "1111111111111"
-				phone: $("#phone").val().trim(),
+				phone: tmp_phone,
 				status: 2,
 				type:new Number(type)
 			}
@@ -442,6 +454,62 @@
 				}
 			})
 		}
+		var NSR_LIST = [];
+		function CX_NSR_LIST_NSRMC(obj) {
+			console.log(obj.value)
+			if(obj.value.length>0)obj.value=obj.value.replace(/\s+/g,'')
+			var nsrmc = obj.value;
+			if(type==1){
+				for(var i=0;i<NSR_LIST.length ;i++){
+					if(nsrmc === NSR_LIST[i].nsrmc){
+						var nsrbm = NSR_LIST[i].nsrbm;
+						if(nsrbm && nsrbm.length>0){
+							$('#nsrsbh').val(nsrbm)
+							return;
+						}
+					}
+				}
+				$.ajax({
+					type: "get",
+					url: "/rest/nsr/plist?nsrmc="+nsrmc,
+					async: true,
+//					data: fromdata,
+					//  数据类型必须为application/x-www-form-urlencoded之外的类型
+					contentType: "application/json;charset=UTF-8",
+					dataType: "json",
+					success: function (res) {
+						if(res.success){
+							NSR_LIST = [];
+							NSR_LIST = res.data.list;
+							var html = "";//browsers
+							for(var i=0;i<NSR_LIST.length ;i++){
+								html+='<option value="'+NSR_LIST[i].nsrmc+'" _data="'+NSR_LIST[i].nsrbm+'">'
+							}
+							$("#browsers").html(html);
+						}
+					}
+				})
+			}else{
+				$("#browsers").html("");
+			}
+		}
+//		function CX_NSR_LIST_NSRMC_BM(obj) {
+//			debugger
+//			if(obj.value.length>0)obj.value=obj.value.replace(/\s+/g,'')
+//			var nsrmc = obj.value;
+//			if(type==1){
+//				$('#nsrsbh').val('')
+//				for(var i=0;i<NSR_LIST.length ;i++){
+//					if(nsrmc === NSR_LIST[i].nsrmc){
+//						var nsrbm = NSR_LIST[i].nsrbm;
+//						if(nsrbm && nsrbm.length>0){
+//							$('#nsrsbh').val(nsrbm)
+//							return;
+//						}
+//					}
+//				}
+//			}
+//		}
 	</script>
 
 	</body>

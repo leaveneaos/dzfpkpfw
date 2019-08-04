@@ -3,6 +3,7 @@ package com.zxbking.dzfpkpfw;
 import com.ihyht.alyxjs.nbjcpt.component.dao.mybatis.DaoMybatisConfig;
 import com.ihyht.alyxjs.nbjcpt.component.swagger.SwaggerConfig;
 import com.ihyht.alyxjs.wfw.component.cache.redis.FrameworkCacheConfig;
+import com.ihyht.alyxjs.wfw.component.mail.MailConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Import;
         ,DaoMybatisConfig.class
         ,DaoServiceConfig.class
         ,FrameworkCacheConfig.class
+        ,MailConfig.class
 })
 public class Application {
 

@@ -45,7 +45,7 @@ function dateFormat_2(longTypeDate){
 	dateType = date.getFullYear()+"-"+getMonth(date)+"-"+getDay(date);//yyyy-MM-dd格式日期
 	return dateType;
 }
-function usermenuData(){
+function usermenuData(name){
 
 	// $.ajax({
 	// 	type:"get",
@@ -59,7 +59,13 @@ function usermenuData(){
 		"{\"sortno\":1517160152914,\"path\":\"./html/fapiaoguanli.html\",\"name\":\"发票信息管理\",\"id\":\"a9c802f71677a237c4cd7049d7246589\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"发票信息管理\"}" +
 		// ", {\"sortno\":1517160084073,\"path\":\"./html/userxinxi.html\",\"name\":\"用户信息\",\"id\":\"6319479984e02683c3cb7897ce0629ec\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"用户信息\"}" +
 		"]";
-
+if(name!="admin"){
+	res1 ="[" +
+		"{\"sortno\":1517160152914,\"path\":\"./html/fptqeem.html\",\"name\":\"发票提取二维码打印\",\"id\":\"a9c802f71677a237c4cd7049d7246589\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"发票提取二维码打印\"}" +
+		//"{\"sortno\":1517160152914,\"path\":\"./html/fapiaoguanli.html\",\"name\":\"发票信息管理\",\"id\":\"a9c802f71677a237c4cd7049d7246589\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"发票信息管理\"}" +
+		// ", {\"sortno\":1517160084073,\"path\":\"./html/userxinxi.html\",\"name\":\"用户信息\",\"id\":\"6319479984e02683c3cb7897ce0629ec\",\"useful\":\"1\",\"parentId\":\"\",\"desc\":\"用户信息\"}" +
+		"]";
+}
 	// console.info(res,"res.data： "+res.data)
 			// $(".c_userName").text(res.data.userName);
 			var liItem="";

@@ -9,7 +9,7 @@
 	//加载用户信息
     userData();
 	//加载用户菜单权限
-	usermenuData();
+	usermenuData(sessionStorage.getItem('accountName'));
 	/*$(".li1").click(function(){
 		$(".d_rightBox").load("html/userxinxi.html");
 		userData();

@@ -4,8 +4,11 @@
 	<el-button type="primary" icon="search" @click="searchForm">查询</el-button>
   	<el-form :model="userManage" :inline="true">
 		<el-form-item label="订单编号：" :label-width="formLabelWidth">
-	      <el-input   v-model="userManage.orderId"  placeholder="请选择订单编号"></el-input>
+	      <el-input   v-model="userManage.orderId"  placeholder="请输入订单编号"></el-input>
 	   </el-form-item>
+		<el-form-item label="单位查询：" :label-width="formLabelWidth">
+			<el-input   v-model="userManage.name"  placeholder="请输入单位名称"></el-input>
+		</el-form-item>
 		<el-form-item label="是否开票：" :label-width="formLabelWidth">
 	      <el-select v-model="userManage.status" placeholder="请选择">
 	      	<el-option v-for="item in statusList" :key="item.key" :label="item.label" :value="item.value"></el-option>
@@ -71,9 +74,10 @@
 			<template scope="scope">
 				<el-button type="text" size="small"  v-if="scope.row.status==1 ||scope.row.status==2"
 						   @click.native.prevent="startUser(scope.row.id)">发票提取二维码打印</el-button>
+				<!--<el-button type="text" size="small"  v-if="scope.row.status==1 ||scope.row.status==2"-->
+						   <!--@click.native.prevent="sendMail(scope.row.id)">补发邮件重填发票信息</el-button>-->
 				<el-button type="text" size="small" v-if="scope.row.status==2"
 						   @click.native.prevent="kjfpUser(scope.row)">开具发票</el-button>
-
 				<el-button type="text" size="small" v-if="scope.row.status != 5"
 						   type="text" size="small" @click.native.prevent="userEdit(scope.row)">编辑</el-button>
 				<el-button type="text" size="small" @click.native.prevent="userOne(scope.row)">明细</el-button>
@@ -266,6 +270,7 @@ data : {
 	userManage:{
 	  orderId:'',
 	  status:'',
+		name:'',
 	  pageNo:1,
 	  pageSize:10
 	},
@@ -416,7 +421,6 @@ data : {
 				async:true,
 				dataType:"json",
 				success:function(res){
-					console.info(res)
 					that.userData = res.data.list;
 				}
 
@@ -427,7 +431,6 @@ data : {
             var that = this;
             that.$refs[formName].validate((valid) => {
                 if (valid) {
-                    console.info(that.userAddFrom)
                     $.ajax({
                         type:"put",
                         url:"/rest/invoice",
@@ -467,7 +470,6 @@ data : {
 				async:true,
 				dataType:"json",
 				success:function(res){
-					console.info(res)
 					that.userEditForm = res.data;
 					that.userOne1 = true;
 				}
@@ -567,10 +569,8 @@ data : {
 				that.userManage.createTime1="";
 				that.userManage.createTime2="";
 			}
-			console.log(that.userManage)
 			$.get("/rest/invoice/plist",that.userManage,function(result){
 				if(result.success){
-				    console.info(result)
                     that.userData = result.data.list;
 					for(var i=0;i<that.userData.length;i++){
 						initKPXX(that.userData[i])
@@ -597,6 +597,31 @@ data : {
                 }
             });
         },
+		sendMail(id){
+			const that = this;
+			$.ajax({
+				type: "get",
+				url: "/send/mail/"+id,
+				async: true,
+//				data: JSON.stringify({}),
+				//  数据类型必须为application/x-www-form-urlencoded之外的类型
+				contentType: "application/json;charset=UTF-8",
+				dataType: "json",
+				success: function (res) {
+					if (res.success) {
+						that.$message({
+							type: 'success',
+							message: '发送邮件成功!'
+						});
+					} else {
+						that.$message({
+							type: 'error',
+							message: '发送邮件失败!'
+						});
+					}
+				}
+			});
+		},
 		kjfpUser(obj){
 			const that = this;
 //			that.$confirm('是否确定已开具发票?', '提示', {
@@ -651,12 +676,10 @@ data : {
 		handleSizeChange(val) {
 			this.userManage.pageSize = val;
             this.searchForm();
-			console.log(`每页 ${val} 条`);
 		},
 		handleCurrentChange(val) {
 			this.userManage.pageNo = val;
             this.searchForm();
-			console.log(`当前页: ${val}`);
 		}
 	},
 

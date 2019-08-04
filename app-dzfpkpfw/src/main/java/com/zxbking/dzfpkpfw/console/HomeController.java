@@ -2,18 +2,24 @@ package com.zxbking.dzfpkpfw.console;
 
 import com.ihyht.alyxjs.nbjcpt.common.api.ApiReturnCodeEnum;
 import com.ihyht.alyxjs.wfw.component.cache.redis.RedisCacheService;
+import com.ihyht.alyxjs.wfw.component.mail.MailConfigNotEnabledException;
+import com.ihyht.alyxjs.wfw.component.mail.MailContentNullException;
+import com.ihyht.alyxjs.wfw.component.mail.MailService;
 import com.ihyht.commons.lang.JsonUtils;
+import com.ihyht.commons.lang.StringUtils;
 import com.ihyht.commons.lang.model.RestResponse;
 import com.zxbking.dzfpkpfw.base.AbstractRestController;
 import com.zxbking.dzfpkpfw.config.SystemConfig;
 import com.zxbking.dzfpkpfw.model.Account;
+import com.zxbking.dzfpkpfw.model.Invoice;
 import com.zxbking.dzfpkpfw.model.UserInfo;
 import com.zxbking.dzfpkpfw.service.AccountService;
+import com.zxbking.dzfpkpfw.service.InvoiceService;
 import com.zxbking.dzfpkpfw.service.UserInfoService;
 import io.swagger.annotations.Api;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,5 +82,36 @@ public class HomeController extends AbstractRestController {
             }
         }
         return  RestResponse.failed(ApiReturnCodeEnum.queryFail);
+    }
+
+    @Autowired
+    private InvoiceService invoiceService;
+    @Autowired
+    private MailService mailService;
+    @RequestMapping(value = "/send/mail/{orderId}", method = RequestMethod.GET)
+    public RestResponse sendMail(@PathVariable String orderId) {
+        Invoice invoice = invoiceService.findById(orderId);
+        String mail = invoice.getEmail();
+        if(StringUtils.isNotEmpty(mail)){
+            String title = "测试邮件";
+            Map<String, String> params = new HashMap<String, String>() {
+                {
+                    put("args", "搞笑一下，测试无限精彩");
+                }
+            };
+            String mailto = "295235027@qq.com";
+            String template = "00-test-sent-message.vm";
+            try {
+                mailService.send(title,mailto,template,params);
+                logger.info("发送成功:"+title);
+            } catch (MailConfigNotEnabledException e) {
+                e.printStackTrace();
+            } catch (MailContentNullException e) {
+                e.printStackTrace();
+            }
+            return RestResponse.success();
+        }else{
+            return RestResponse.failed("邮箱为空，发送失败！");
+        }
     }
 }

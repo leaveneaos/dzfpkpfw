@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxbking.dzfpkpfw.mapper.NsrMapper">
+  <resultMap id="BaseResultMap" type="com.zxbking.dzfpkpfw.model.Nsr">
+    <!--
+      @MBG Generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="nsrmc" jdbcType="VARCHAR" property="nsrmc" />
+    <result column="nsrbm" jdbcType="VARCHAR" property="nsrbm" />
+    <result column="valid_mark" jdbcType="INTEGER" property="validMark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_time" jdbcType="TIMESTAMP" property="lastTime" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <result column="delete_time" jdbcType="TIMESTAMP" property="deleteTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <!--
+      @MBG Generated
+    -->
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <!--
+      @MBG Generated
+    -->
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    <!--
+      @MBG Generated
+    -->
+    id, nsrmc, nsrbm, valid_mark, create_time, last_time, deleted, delete_time
+  </sql>
+  <select id="selectByExample" parameterType="com.zxbking.dzfpkpfw.model.NsrExample" resultMap="BaseResultMap">
+    <!--
+      @MBG Generated
+    -->
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_base_nsr
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--
+      @MBG Generated
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from tb_base_nsr
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--
+      @MBG Generated
+    -->
+    delete from tb_base_nsr
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zxbking.dzfpkpfw.model.NsrExample">
+    <!--
+      @MBG Generated
+    -->
+    delete from tb_base_nsr
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zxbking.dzfpkpfw.model.Nsr">
+    <!--
+      @MBG Generated
+    -->
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+       select replace(uuid(),'-','')
+    </selectKey>
+    insert into tb_base_nsr (id, nsrmc, nsrbm, 
+      valid_mark, create_time, last_time, 
+      deleted, delete_time)
+    values (#{id,jdbcType=VARCHAR}, #{nsrmc,jdbcType=VARCHAR}, #{nsrbm,jdbcType=VARCHAR}, 
+      #{validMark,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastTime,jdbcType=TIMESTAMP}, 
+      #{deleted,jdbcType=INTEGER}, #{deleteTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zxbking.dzfpkpfw.model.Nsr">
+    <!--
+      @MBG Generated
+    -->
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+       select replace(uuid(),'-','')
+    </selectKey>
+    insert into tb_base_nsr
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      id,
+      <if test="nsrmc != null">
+        nsrmc,
+      </if>
+      <if test="nsrbm != null">
+        nsrbm,
+      </if>
+      <if test="validMark != null">
+        valid_mark,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="lastTime != null">
+        last_time,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="deleteTime != null">
+        delete_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{id,jdbcType=VARCHAR},
+      <if test="nsrmc != null">
+        #{nsrmc,jdbcType=VARCHAR},
+      </if>
+      <if test="nsrbm != null">
+        #{nsrbm,jdbcType=VARCHAR},
+      </if>
+      <if test="validMark != null">
+        #{validMark,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null">
+        #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="deleteTime != null">
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zxbking.dzfpkpfw.model.NsrExample" resultType="java.lang.Integer">
+    <!--
+      @MBG Generated
+    -->
+    select count(*) from tb_base_nsr
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    <!--
+      @MBG Generated
+    -->
+    update tb_base_nsr
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nsrmc != null">
+        nsrmc = #{record.nsrmc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nsrbm != null">
+        nsrbm = #{record.nsrbm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.validMark != null">
+        valid_mark = #{record.validMark,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastTime != null">
+        last_time = #{record.lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.deleted != null">
+        deleted = #{record.deleted,jdbcType=INTEGER},
+      </if>
+      <if test="record.deleteTime != null">
+        delete_time = #{record.deleteTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    <!--
+      @MBG Generated
+    -->
+    update tb_base_nsr
+    set id = #{record.id,jdbcType=VARCHAR},
+      nsrmc = #{record.nsrmc,jdbcType=VARCHAR},
+      nsrbm = #{record.nsrbm,jdbcType=VARCHAR},
+      valid_mark = #{record.validMark,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      last_time = #{record.lastTime,jdbcType=TIMESTAMP},
+      deleted = #{record.deleted,jdbcType=INTEGER},
+      delete_time = #{record.deleteTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zxbking.dzfpkpfw.model.Nsr">
+    <!--
+      @MBG Generated
+    -->
+    update tb_base_nsr
+    <set>
+      <if test="nsrmc != null">
+        nsrmc = #{nsrmc,jdbcType=VARCHAR},
+      </if>
+      <if test="nsrbm != null">
+        nsrbm = #{nsrbm,jdbcType=VARCHAR},
+      </if>
+      <if test="validMark != null">
+        valid_mark = #{validMark,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="deleteTime != null">
+        delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zxbking.dzfpkpfw.model.Nsr">
+    <!--
+      @MBG Generated
+    -->
+    update tb_base_nsr
+    set nsrmc = #{nsrmc,jdbcType=VARCHAR},
+      nsrbm = #{nsrbm,jdbcType=VARCHAR},
+      valid_mark = #{validMark,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_time = #{lastTime,jdbcType=TIMESTAMP},
+      deleted = #{deleted,jdbcType=INTEGER},
+      delete_time = #{deleteTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

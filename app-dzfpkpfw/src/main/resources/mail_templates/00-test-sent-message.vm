@@ -1,0 +1,17 @@
+#*
+模板描述：测试发送邮件模板
+输入参数：args：动态内容
+*#
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>测试发送邮件模</title>
+</head>
+<body>
+由于之前网络异常，导致部分发票信息未记录。请重新扫原来的二位码进行开票信息录入。<br>
+测试参数为：${args}
+</body>
+</html>
